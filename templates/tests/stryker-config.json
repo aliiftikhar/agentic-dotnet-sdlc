@@ -1,0 +1,13 @@
+{
+  "stryker-config": {
+    "project": "<ApiProject>.csproj",
+    "test-projects": ["<UnitTestProject>.csproj"],
+    "mutate": [
+      "**/UseCases/**/*.cs",
+      "**/Services/**/*.cs",
+      "**/Models/**/*.cs"
+    ],
+    "reporters": ["html", "progress", "cleartext"],
+    "thresholds": { "high": 80, "low": 60, "break": 0 }
+  }
+}

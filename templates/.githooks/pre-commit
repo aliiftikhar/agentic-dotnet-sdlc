@@ -1,0 +1,7 @@
+#!/bin/sh
+# Changes reach main only through pull requests.
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+if [ "$branch" = "main" ]; then
+  echo "Blocked: don't commit directly to main. Create a branch (git switch -c <name>) and open a pull request." >&2
+  exit 1
+fi

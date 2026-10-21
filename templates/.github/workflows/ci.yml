@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# If a deployment workflow checks that CI passed (e.g. by looking up runs of this file),
+# update it whenever you rename this file.
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # One build step per deployable project that the test project doesn't already build
+      - name: Build <WebProject>
+        run: dotnet build ./<WebProject>/<WebProject>.csproj --configuration Release
+
+      - name: Run unit tests (builds <ApiProject>)
+        run: dotnet test ./<UnitTestProject>/<UnitTestProject>.csproj --configuration Release

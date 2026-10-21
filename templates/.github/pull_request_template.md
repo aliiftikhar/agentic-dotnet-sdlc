@@ -14,6 +14,11 @@ Closes #
 - [ ] Tests added or updated for changed code
 - [ ] Integration tests run, if affected
 
+## Mutation check
+<!-- Required if mutation-tested folders changed: run scripts/mutation-check.sh and paste its last line -->
+- [ ] Not applicable (no changes in mutation-tested folders)
+- [ ] `scripts/mutation-check.sh` passed: 
+
 ## Migration needed?
 - [ ] No
 - [ ] Yes: the model changed, and the owner needs to generate the migration
