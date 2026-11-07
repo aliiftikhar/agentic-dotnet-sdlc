@@ -19,6 +19,14 @@
           {
             "type": "command",
             "if": "Bash(gh pr create*)",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/spec-check-before-pr.sh",
+            "timeout": 60,
+            "statusMessage": "Checking the spec and plan match the diff before opening the PR",
+            "onFailure": "block"
+          },
+          {
+            "type": "command",
+            "if": "Bash(gh pr create*)",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/mutation-check-before-pr.sh",
             "timeout": 1800,
             "statusMessage": "Running the mutation check before opening the PR",

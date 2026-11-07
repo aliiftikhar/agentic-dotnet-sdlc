@@ -1,0 +1,19 @@
+schema: spec-driven
+
+# Copy the context and rules below into the config.yaml that `openspec init` creates, then fill in the <placeholders>.
+# Keep only what an agent can't find by reading the code; conventions belong in AGENTS.md.
+
+context: |
+  AGENTS.md (root and per-project) is the source of truth for conventions, build/test commands and git workflow; proposals, designs and tasks follow it.
+  Every proposal states whether the change touches personal data, authentication/authorisation, payments or third-party AI providers, and if so what is stored, shown or sent where. Open questions on these go to the repo owner before design.
+  Agents never add EF Core migration files or run migrations; designs list the model/DbContext changes and flag that a migration is needed.
+  <Anything else agents must know, e.g. which solution or project not to build.>
+
+rules:
+  design:
+    - Reuse the existing structure (use cases, repositories, endpoints) described in AGENTS.md
+    - Choose the simplest change that meets the spec, with no speculative abstractions or persistence
+  tasks:
+    - Name every file to be changed by its path, because scripts/spec-check.sh checks them against the diff
+    - List the tests added or changed; a new or changed handler needs handler unit tests
+    - Changes in <ApiProject> UseCases/, Services/ or Models/ must pass scripts/mutation-check.sh
