@@ -1,0 +1,22 @@
+name: Spec check
+
+# Code changes need an OpenSpec change, and every changed file must be named in its design or tasks (see AGENTS.md).
+# Add the `no-spec` label to skip it.
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  spec-check:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-spec') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check the spec and plan match the diff
+        run: scripts/spec-check.sh
