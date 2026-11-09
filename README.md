@@ -10,6 +10,10 @@ Everything here has been used on a real production .NET SaaS before being added.
 Request → agent proposes a spec → you approve → agent builds on a branch → checks (hooks, tests, mutation, spec matches diff) → PR → CI → AI review → you merge
 ```
 
+See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does the work, what it produces, which rules and files drive it, and what enforces it.
+
+[![Agentic SDLC map](docs/sdlc-map.svg)](docs/sdlc-map.md)
+
 ## What's in it
 
 ### v0: the loop
