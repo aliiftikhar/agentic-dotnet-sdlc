@@ -27,9 +27,10 @@ The map is drawn from [`sdlc-map.json`](sdlc-map.json). To change it, edit the J
 python3 tools/render-sdlc-map.py
 ```
 
-- Start a line with `+` to mark it as arriving in the next release (drawn in amber).
-- Start a line with `~` to mark it as planned (grey, dashed). Change it to `+` once it works on the source project.
-- When a release ships, remove the `+` from its lines and add a row to the changelog below.
+- Each entry in a cell is one point, drawn as a bullet; long points wrap under their bullet, so don't split a point across entries.
+- Start a point with `+` to mark it as arriving in the next release (drawn in amber).
+- Start a point with `~` to mark it as planned (grey, dashed). Change it to `+` once it works on the source project.
+- When a release ships, remove the `+` from its points and add a row to the changelog below.
 - Commit the JSON and the SVG together.
 
 ## Changelog

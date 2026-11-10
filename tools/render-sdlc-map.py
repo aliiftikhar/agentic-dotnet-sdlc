@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Render docs/sdlc-map.json as docs/sdlc-map.svg: one column per stage, the same rows lined up across columns.
 
-A line starting with "+" arrives in the next release and is drawn in amber.
-A line starting with "~" is planned and is drawn grey with a dashed outline.
+Each entry in a cell is one point, drawn as a bullet and wrapped to the column width.
+A point starting with "+" arrives in the next release and is drawn in amber.
+A point starting with "~" is planned and is drawn grey with a dashed outline.
 Usage: python3 tools/render-sdlc-map.py   (no dependencies)
 """
 import json
@@ -14,6 +15,7 @@ data = json.loads((root / "docs/sdlc-map.json").read_text())
 
 COL_W, GAP, LABEL_W, PAD = 250, 22, 104, 24
 LINE_H, CARD_PAD, ROW_GAP, HEADER_H = 17, 10, 10, 40
+FONT_SIZE, BULLET_GAP, TEXT_INDENT = 12.5, 5, 22   # text starts TEXT_INDENT px into the card
 TITLE_H = 70
 FONT = "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 INK, MUTED, BORDER, CARD = "#1f2328", "#59636e", "#d0d7de", "#f6f8fa"
@@ -22,7 +24,36 @@ PLAN_INK, PLAN_LINE = "#6e7781", "#8c959f"
 ACCENT = "#0969da"
 
 stages, rows = data["stages"], data["rows"]
-row_h = [max(len(s.get(r, [])) for s in stages) * LINE_H + 2 * CARD_PAD + 4 for r in rows]
+
+def char_w(c):
+    # Rough Helvetica widths in em, enough to wrap without measuring fonts.
+    if c in "il.,:;'|!()[]/ fjtr-": return 0.3
+    if c in "mwMW@": return 0.85
+    if c.isupper() or c in "<>_?%&": return 0.66
+    return 0.55
+
+def wrap(text):
+    max_w = (COL_W - TEXT_INDENT - 8) / FONT_SIZE
+    lines, line = [], ""
+    for word in text.split(" "):
+        test = f"{line} {word}" if line else word
+        if line and sum(map(char_w, test)) > max_w:
+            lines.append(line)
+            line = word
+        else:
+            line = test
+    return lines + [line]
+
+def points(stage, row):
+    for item in stage.get(row, []):
+        kind = item[0] if item[:1] in ("+", "~") else ""
+        yield kind, wrap(item[len(kind):])
+
+def cell_h(stage, row):
+    pts = list(points(stage, row))
+    return sum(len(lines) for _, lines in pts) * LINE_H + max(len(pts) - 1, 0) * BULLET_GAP
+
+row_h = [max(cell_h(s, r) for s in stages) + 2 * CARD_PAD + 4 for r in rows]
 
 width = PAD * 2 + LABEL_W + len(stages) * COL_W + (len(stages) - 1) * GAP
 grid_top = PAD + TITLE_H + HEADER_H + 12
@@ -54,21 +85,21 @@ for r, h in zip(rows, row_h):
     out.append(f'<text x="{PAD}" y="{y + CARD_PAD + 13}" font-size="13" font-weight="600" fill="{MUTED}">{escape(r)}</text>')
     for i, stage in enumerate(stages):
         x = col_x(i)
-        lines = stage.get(r, [])
         out.append(f'<rect x="{x}" y="{y}" width="{COL_W}" height="{h}" rx="6" fill="{CARD}" stroke="{BORDER}"/>')
         ty = y + CARD_PAD + 13
-        for line in lines:
-            nxt, planned = line.startswith("+"), line.startswith("~")
-            text = line[1:] if nxt or planned else line
-            ink, style = INK, ""
-            if nxt:
+        for kind, lines in points(stage, r):
+            ink, style, box_h = INK, "", len(lines) * LINE_H
+            if kind == "+":
                 ink = NEXT_INK
-                out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{LINE_H}" rx="3" fill="{NEXT_BG}"/>')
-            elif planned:
+                out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{box_h}" rx="3" fill="{NEXT_BG}"/>')
+            elif kind == "~":
                 ink, style = PLAN_INK, ' font-style="italic"'
-                out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{LINE_H}" rx="3" fill="none" stroke="{PLAN_LINE}" stroke-dasharray="3 3"/>')
-            out.append(f'<text x="{x + 10}" y="{ty}" font-size="12.5" fill="{ink}"{style}>{escape(text)}</text>')
-            ty += LINE_H
+                out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{box_h}" rx="3" fill="none" stroke="{PLAN_LINE}" stroke-dasharray="3 3"/>')
+            out.append(f'<circle cx="{x + 13}" cy="{ty - 4}" r="2.2" fill="{ink if kind else MUTED}"/>')
+            for line in lines:
+                out.append(f'<text x="{x + TEXT_INDENT}" y="{ty}" font-size="{FONT_SIZE}" fill="{ink}"{style}>{escape(line)}</text>')
+                ty += LINE_H
+            ty += BULLET_GAP
     y += h + ROW_GAP
 
 for k, note in enumerate(data["loops"]):
