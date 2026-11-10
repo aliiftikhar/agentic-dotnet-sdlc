@@ -1,6 +1,6 @@
 {
   "title": "Agentic SDLC map",
-  "subtitle": "How a change moves through the kit, as of v2.5. Amber lines arrive in the next release; grey dashed lines are planned.",
+  "subtitle": "How a change moves through the kit, as of v2.5. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label.",
   "next_release": "v2.5",
   "rows": ["Who", "Produces", "Rules", "Fed by", "Checks", "Gates"],
   "stages": [
@@ -59,5 +59,11 @@
       "Gates": ["Only the owner merges", "pre-push hook: no pushes to main", "Deny rules: agents can't merge or deploy"]
     }
   ],
-  "loops": ["Review comments or a FAIL verdict go back to 3 · Build as new commits on the same branch.", "no-spec: the owner exempts a small harness or config change from 2 and 4; every other check still runs."]
+  "loops": [
+    {"from": 5, "to": 3, "also_from": [4], "label": "FAIL verdict on [4. Check] or [5. PR and review] loops back to [3. Build]; with new commits on the same branch"}
+  ],
+  "skips": [
+    {"from": 1, "to": 3, "label": "\"no-spec\" github label skips [2. Plan] step."},
+    {"from": 3, "to": 5, "label": "\"no-spec\" github label skips [4. Check] step."}
+  ]
 }
