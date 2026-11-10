@@ -16,11 +16,11 @@
     {
       "name": "2 · Plan",
       "Who": ["Agent proposes (/opsx:propose)", "Owner approves or asks", "for changes (/opsx:update)"],
-      "Produces": ["openspec/changes/<name>/:", "proposal.md, specs/,", "design.md, tasks.md"],
+      "Produces": ["openspec/changes/<name>/:", "proposal.md, specs/,", "design.md, tasks.md", "+UI: mockups/ (desktop + phone)"],
       "Rules": ["openspec/config.yaml", "AGENTS.md: Specs and Workflows"],
       "Fed by": ["Living specs (openspec/specs/)", "Root and project AGENTS.md", "The code"],
-      "Checks": ["openspec validate --strict", "Proposal flags personal data,", "auth, payments, AI providers", "~UI mock-up for page changes"],
-      "Gates": ["Agent stops after propose", "Owner approves the plan"]
+      "Checks": ["openspec validate --strict", "Proposal flags personal data,", "auth, payments, AI providers", "+UI mock-up rendered with the", "+app's own CSS, no app running"],
+      "Gates": ["Agent stops after propose", "Owner approves the plan", "+and the mock-up; spec check:", "+mock-up committed before UI code"]
     },
     {
       "name": "3 · Build",

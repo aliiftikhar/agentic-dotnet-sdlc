@@ -49,6 +49,8 @@
 <text x="410" y="254" font-size="12.5" fill="#1f2328">openspec/changes/&lt;name&gt;/:</text>
 <text x="410" y="271" font-size="12.5" fill="#1f2328">proposal.md, specs/,</text>
 <text x="410" y="288" font-size="12.5" fill="#1f2328">design.md, tasks.md</text>
+<rect x="405" y="292" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="410" y="305" font-size="12.5" fill="#9a6700">UI: mockups/ (desktop + phone)</text>
 <rect x="672" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="682" y="254" font-size="12.5" fill="#1f2328">Code and tests</text>
 <text x="682" y="271" font-size="12.5" fill="#1f2328">Ticked tasks.md</text>
@@ -129,8 +131,10 @@
 <text x="410" y="543" font-size="12.5" fill="#1f2328">openspec validate --strict</text>
 <text x="410" y="560" font-size="12.5" fill="#1f2328">Proposal flags personal data,</text>
 <text x="410" y="577" font-size="12.5" fill="#1f2328">auth, payments, AI providers</text>
-<rect x="405" y="581" width="240" height="17" rx="3" fill="none" stroke="#8c959f" stroke-dasharray="3 3"/>
-<text x="410" y="594" font-size="12.5" fill="#6e7781" font-style="italic">UI mock-up for page changes</text>
+<rect x="405" y="581" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="410" y="594" font-size="12.5" fill="#9a6700">UI mock-up rendered with the</text>
+<rect x="405" y="598" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="410" y="611" font-size="12.5" fill="#9a6700">app&#x27;s own CSS, no app running</text>
 <rect x="672" y="520" width="250" height="160" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="682" y="543" font-size="12.5" fill="#1f2328">Build and unit tests (Stop hook)</text>
 <text x="682" y="560" font-size="12.5" fill="#1f2328">Architecture tests</text>
@@ -172,6 +176,10 @@
 <rect x="400" y="690" width="250" height="126" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="410" y="713" font-size="12.5" fill="#1f2328">Agent stops after propose</text>
 <text x="410" y="730" font-size="12.5" fill="#1f2328">Owner approves the plan</text>
+<rect x="405" y="734" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="410" y="747" font-size="12.5" fill="#9a6700">and the mock-up; spec check:</text>
+<rect x="405" y="751" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="410" y="764" font-size="12.5" fill="#9a6700">mock-up committed before UI code</text>
 <rect x="672" y="690" width="250" height="126" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="682" y="713" font-size="12.5" fill="#1f2328">Git hooks: no commits to main</text>
 <rect x="677" y="717" width="240" height="17" rx="3" fill="#fff8c5"/>

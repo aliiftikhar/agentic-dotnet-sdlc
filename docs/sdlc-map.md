@@ -39,4 +39,4 @@ python3 tools/render-sdlc-map.py
 | v0 | Request, build on a branch, PR, AI review, owner merges |
 | v1 | Git hooks, Stop hook, architecture tests, mutation check, CI |
 | v2 | Plan stage (OpenSpec), skills, policy review, spec check, Deploy section in the PR |
-| v2.5 (next) | Verifier and the Check stage's verdict, failing-test-first bug fixes, deny rules, protected paths, format check, UI screenshots |
+| v2.5 (next) | Verifier and the Check stage's verdict, failing-test-first bug fixes, deny rules, protected paths, format check, UI mock-ups and screenshots |
