@@ -19,4 +19,5 @@
 
 - [x] 4.1 `dotnet test MyApi.UnitTests` passes
 - [x] 4.2 `scripts/mutation-check.sh` passes (0 survived, 0 uncovered)
-- [x] 4.3 `policy-review` run on the change and the diff
+- [x] 4.3 `verifier` agent run with the change name only; verdict PASS (`verification.md`)
+- [x] 4.4 `policy-review` run on the change and the diff

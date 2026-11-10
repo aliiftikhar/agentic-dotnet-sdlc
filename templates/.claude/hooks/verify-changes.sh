@@ -1,6 +1,6 @@
 #!/bin/bash
-# Claude Code Stop hook: before Claude finishes a turn, build the projects it changed
-# and run the unit tests. On failure it blocks once (exit 2) and hands the errors back
+# Claude Code Stop hook: before Claude finishes a turn, build the projects it changed,
+# run the unit tests and check C# formatting (scripts/format-check.sh). On failure it blocks once (exit 2) and hands the errors back
 # to Claude to fix; it never blocks twice in a row, so it can't loop.
 
 # --- Configure for your repository -------------------------------------------------
@@ -68,6 +68,11 @@ $(grep -E '^\s*Failed |Failed!' <<<"$output" | head -15)
   fi
 fi
 
+output=$("$repo/scripts/format-check.sh" 2>&1) || failures+="Formatting (run scripts/format-check.sh --fix):
+$output
+
+"
+
 if [ -z "$failures" ]; then
   echo "$state" > "$stamp"
   exit 0
@@ -75,9 +80,9 @@ fi
 
 if grep -qE '"stop_hook_active" *: *true' <<<"$input"; then
   # Already blocked once this turn: tell the user instead of blocking again
-  printf '{"systemMessage": "Verify hook: build or unit tests still failing after one fix attempt."}\n'
+  printf '{"systemMessage": "Verify hook: build, unit tests or format check still failing after one fix attempt."}\n'
   exit 0
 fi
 
-printf 'The build or unit tests fail for the changes you made. Fix these before finishing:\n\n%s' "$failures" >&2
+printf 'The build, unit tests or format check fail for the changes you made. Fix these before finishing:\n\n%s' "$failures" >&2
 exit 2

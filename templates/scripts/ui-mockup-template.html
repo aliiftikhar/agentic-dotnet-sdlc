@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+  Starter page for a UI mock-up (see "UI changes" in AGENTS.md).
+  Stylesheet links are relative to the repo root; scripts/ui-mockups.sh inlines them (and the icon sprite,
+  if SPRITE is set) when it renders, so opening this file directly in a browser shows it unstyled.
+  Use made-up data only.
+
+  Set up once: link your app's real stylesheets (global CSS and the scoped .razor.css files of the layout),
+  then replace the shell below with your layout's rendered markup (e.g. copied from the browser's dev tools),
+  signed in, with made-up names, and an empty <main>. Check one render against a real screenshot.
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="<SharedUiProject>/wwwroot/<css framework, e.g. bootstrap/bootstrap.min.css>" />
+    <link rel="stylesheet" href="<SharedUiProject>/wwwroot/<app.css>" />
+    <link rel="stylesheet" href="<SharedUiProject>/Layout/MainLayout.razor.css" />
+    <link rel="stylesheet" href="<SharedUiProject>/Layout/NavMenu.razor.css" />
+</head>
+<body>
+<div class="page">
+
+    <div class="sidebar">
+        <!-- Your nav menu markup. Put the active class on the page being drawn. -->
+    </div>
+
+    <main>
+        <article class="content">
+            <!-- MOCK-UP: draw the page here, using the app's existing classes. -->
+        </article>
+    </main>
+
+</div>
+</body>
+</html>

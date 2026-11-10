@@ -20,6 +20,7 @@
 2. <step>
 3. Add or update unit tests
 4. Run the build and tests (see the root `AGENTS.md`)
+5. In a UI project: draw a mock-up with `scripts/ui-mockups.sh` before the code, and take screenshots with `scripts/ui-screenshots.sh` after it (see "UI changes" in the root `AGENTS.md`)
 
 ## Architecture Tests
 

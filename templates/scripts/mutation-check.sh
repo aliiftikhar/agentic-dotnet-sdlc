@@ -24,8 +24,15 @@ fi
 source_regex=$(sed 's/\./\\./g' <<<"$SOURCE_PROJECT")
 changed=$( { git diff --name-only --no-renames "$base"; git ls-files --others --exclude-standard; } \
   | grep -E "^${source_regex}/(${MUTATED_FOLDERS})/.*\.cs$" | sort -u )
+# Whitespace-only changes (e.g. from scripts/format-check.sh --fix) change no behaviour, so they're skipped.
+changed=$(while read -r file; do
+  [ -z "$file" ] && continue
+  if git ls-files --error-unmatch "$file" >/dev/null 2>&1 && git cat-file -e "$base:$file" 2>/dev/null \
+    && git diff --quiet -w --ignore-blank-lines "$base" -- "$file"; then continue; fi
+  echo "$file"
+done <<<"$changed")
 if [ -z "$changed" ]; then
-  echo "Mutation check: no changes in $SOURCE_PROJECT ($MUTATED_FOLDERS); nothing to check."
+  echo "Mutation check: no changes in $SOURCE_PROJECT ($MUTATED_FOLDERS) apart from whitespace; nothing to check."
   exit 0
 fi
 
