@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1762" height="734" viewBox="0 0 1762 734" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker></defs>
+<text x="24" y="46" font-size="22" font-weight="600" fill="#1f2328">Agentic SDLC map</text>
+<text x="24" y="72" font-size="13" fill="#59636e">How a change moves through the kit. Amber lines arrive in the next release (v2.5).</text>
+<rect x="128" y="94" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="253.0" y="120" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">1 · Request</text>
+<line x1="380" y1="114.0" x2="398" y2="114.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="400" y="94" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="525.0" y="120" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">2 · Plan</text>
+<line x1="652" y1="114.0" x2="670" y2="114.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="672" y="94" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="797.0" y="120" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">3 · Build</text>
+<line x1="924" y1="114.0" x2="942" y2="114.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="944" y="94" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="1069.0" y="120" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">4 · Check</text>
+<line x1="1196" y1="114.0" x2="1214" y2="114.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1216" y="94" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="1341.0" y="120" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">5 · PR and review</text>
+<line x1="1468" y1="114.0" x2="1486" y2="114.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1488" y="94" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="1613.0" y="120" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">6 · Merge and release</text>
+<text x="24" y="169" font-size="13" font-weight="600" fill="#59636e">Who</text>
+<rect x="128" y="146" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="138" y="169" font-size="12.5" fill="#1f2328">Owner</text>
+<rect x="400" y="146" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="410" y="169" font-size="12.5" fill="#1f2328">Agent proposes (/opsx:propose)</text>
+<text x="410" y="186" font-size="12.5" fill="#1f2328">Owner approves or asks</text>
+<text x="410" y="203" font-size="12.5" fill="#1f2328">for changes (/opsx:update)</text>
+<rect x="672" y="146" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="682" y="169" font-size="12.5" fill="#1f2328">Agent applies on a branch</text>
+<text x="682" y="186" font-size="12.5" fill="#1f2328">(/opsx:apply)</text>
+<rect x="944" y="146" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<rect x="949" y="156" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="169" font-size="12.5" fill="#9a6700">Verifier subagent (fresh context)</text>
+<text x="954" y="186" font-size="12.5" fill="#1f2328">Agent: policy-review skill,</text>
+<text x="954" y="203" font-size="12.5" fill="#1f2328">then archive (/opsx:archive)</text>
+<rect x="1216" y="146" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1226" y="169" font-size="12.5" fill="#1f2328">Agent opens the PR</text>
+<text x="1226" y="186" font-size="12.5" fill="#1f2328">CI</text>
+<text x="1226" y="203" font-size="12.5" fill="#1f2328">AI reviewer (Codex)</text>
+<rect x="1488" y="146" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1498" y="169" font-size="12.5" fill="#1f2328">Owner only</text>
+<text x="24" y="254" font-size="13" font-weight="600" fill="#59636e">Produces</text>
+<rect x="128" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="138" y="254" font-size="12.5" fill="#1f2328">Issue or plain request</text>
+<text x="138" y="271" font-size="12.5" fill="#1f2328">with acceptance criteria</text>
+<rect x="400" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="410" y="254" font-size="12.5" fill="#1f2328">openspec/changes/&lt;name&gt;/:</text>
+<text x="410" y="271" font-size="12.5" fill="#1f2328">proposal.md, specs/,</text>
+<text x="410" y="288" font-size="12.5" fill="#1f2328">design.md, tasks.md</text>
+<rect x="672" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="682" y="254" font-size="12.5" fill="#1f2328">Code and tests</text>
+<text x="682" y="271" font-size="12.5" fill="#1f2328">Ticked tasks.md</text>
+<rect x="677" y="275" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="288" font-size="12.5" fill="#9a6700">Bug fix: failing test committed</text>
+<rect x="677" y="292" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="305" font-size="12.5" fill="#9a6700">first, failing-test.md</text>
+<rect x="944" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<rect x="949" y="241" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="254" font-size="12.5" fill="#9a6700">verification.md with a verdict</text>
+<text x="954" y="271" font-size="12.5" fill="#1f2328">policy-review.md</text>
+<text x="954" y="288" font-size="12.5" fill="#1f2328">Spec merged into openspec/specs/</text>
+<rect x="1216" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1226" y="254" font-size="12.5" fill="#1f2328">PR from the template: spec,</text>
+<text x="1226" y="271" font-size="12.5" fill="#1f2328">verdict, mutation result,</text>
+<text x="1226" y="288" font-size="12.5" fill="#1f2328">migration?, Deploy order</text>
+<rect x="1488" y="231" width="250" height="92" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1498" y="254" font-size="12.5" fill="#1f2328">Merge to main</text>
+<text x="1498" y="271" font-size="12.5" fill="#1f2328">Deploys in the PR&#x27;s Deploy order</text>
+<text x="24" y="356" font-size="13" font-weight="600" fill="#59636e">Rules</text>
+<rect x="128" y="333" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="138" y="356" font-size="12.5" fill="#1f2328">AGENTS.md: every change</text>
+<text x="138" y="373" font-size="12.5" fill="#1f2328">goes through OpenSpec</text>
+<rect x="400" y="333" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="410" y="356" font-size="12.5" fill="#1f2328">openspec/config.yaml</text>
+<text x="410" y="373" font-size="12.5" fill="#1f2328">AGENTS.md: Specs and Workflows</text>
+<rect x="672" y="333" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="682" y="356" font-size="12.5" fill="#1f2328">AGENTS.md, project AGENTS.md</text>
+<text x="682" y="373" font-size="12.5" fill="#1f2328">Skills: create-usecase,</text>
+<text x="682" y="390" font-size="12.5" fill="#1f2328">model-change, handler-tests</text>
+<rect x="944" y="333" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<rect x="949" y="343" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="356" font-size="12.5" fill="#9a6700">.agents/agents/verifier.md</text>
+<text x="954" y="373" font-size="12.5" fill="#1f2328">skills/policy-review</text>
+<rect x="1216" y="333" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1226" y="356" font-size="12.5" fill="#1f2328">Project AGENTS.md:</text>
+<text x="1226" y="373" font-size="12.5" fill="#1f2328">Code Review Rules</text>
+<text x="1226" y="390" font-size="12.5" fill="#1f2328">AGENTS.md: Review guidelines</text>
+<rect x="1488" y="333" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1498" y="356" font-size="12.5" fill="#1f2328">Labels only the owner adds:</text>
+<text x="1498" y="373" font-size="12.5" fill="#1f2328">no-spec</text>
+<rect x="1493" y="377" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="1498" y="390" font-size="12.5" fill="#9a6700">protected-ok</text>
+<text x="24" y="441" font-size="13" font-weight="600" fill="#59636e">Fed by</text>
+<rect x="128" y="418" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="138" y="441" font-size="12.5" fill="#1f2328">ISSUE_TEMPLATE/</text>
+<text x="138" y="458" font-size="12.5" fill="#1f2328">change-request.md</text>
+<rect x="400" y="418" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="410" y="441" font-size="12.5" fill="#1f2328">Living specs (openspec/specs/)</text>
+<text x="410" y="458" font-size="12.5" fill="#1f2328">Root and project AGENTS.md</text>
+<text x="410" y="475" font-size="12.5" fill="#1f2328">The code</text>
+<rect x="672" y="418" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="682" y="441" font-size="12.5" fill="#1f2328">tasks.md and design.md</text>
+<rect x="677" y="445" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="458" font-size="12.5" fill="#9a6700">.editorconfig</text>
+<rect x="944" y="418" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<rect x="949" y="428" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="441" font-size="12.5" fill="#9a6700">Change name and diff only,</text>
+<rect x="949" y="445" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="458" font-size="12.5" fill="#9a6700">never the builder&#x27;s summary</text>
+<rect x="1216" y="418" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1226" y="441" font-size="12.5" fill="#1f2328">The diff</text>
+<text x="1226" y="458" font-size="12.5" fill="#1f2328">The archived change</text>
+<rect x="1488" y="418" width="250" height="75" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1498" y="441" font-size="12.5" fill="#1f2328">PR checks and review comments</text>
+<rect x="1493" y="445" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="1498" y="458" font-size="12.5" fill="#9a6700">Verifier&#x27;s manual checks</text>
+<text x="24" y="526" font-size="13" font-weight="600" fill="#59636e">Enforced by</text>
+<rect x="128" y="503" width="250" height="143" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="138" y="526" font-size="12.5" fill="#1f2328">Owner&#x27;s judgement</text>
+<rect x="400" y="503" width="250" height="143" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="410" y="526" font-size="12.5" fill="#1f2328">openspec validate --strict</text>
+<text x="410" y="543" font-size="12.5" fill="#1f2328">Agent stops for approval</text>
+<rect x="672" y="503" width="250" height="143" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="682" y="526" font-size="12.5" fill="#1f2328">Git hooks: no commits to main</text>
+<text x="682" y="543" font-size="12.5" fill="#1f2328">Stop hook: build and tests</text>
+<text x="682" y="560" font-size="12.5" fill="#1f2328">Architecture tests</text>
+<rect x="677" y="564" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="577" font-size="12.5" fill="#9a6700">Stop hook: format check</text>
+<rect x="677" y="581" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="594" font-size="12.5" fill="#9a6700">Hook locks the failing test</text>
+<rect x="677" y="598" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="611" font-size="12.5" fill="#9a6700">Deny: merge, deploy, --no-verify</text>
+<rect x="677" y="615" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="682" y="628" font-size="12.5" fill="#9a6700">Ask: edits to protected paths</text>
+<rect x="944" y="503" width="250" height="143" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="954" y="526" font-size="12.5" fill="#1f2328">spec-check.sh: plan matches diff</text>
+<rect x="949" y="530" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="543" font-size="12.5" fill="#9a6700">spec-check.sh: verdict passes</text>
+<rect x="949" y="547" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="560" font-size="12.5" fill="#9a6700">spec-check.sh: test commit</text>
+<rect x="949" y="564" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="954" y="577" font-size="12.5" fill="#9a6700">before the fix</text>
+<rect x="1216" y="503" width="250" height="143" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1226" y="526" font-size="12.5" fill="#1f2328">Before gh pr create: spec check,</text>
+<text x="1226" y="543" font-size="12.5" fill="#1f2328">mutation check (0 survived)</text>
+<text x="1226" y="560" font-size="12.5" fill="#1f2328">CI: build, tests, spec check</text>
+<rect x="1221" y="564" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="1226" y="577" font-size="12.5" fill="#9a6700">CI: format, protected paths</text>
+<rect x="1488" y="503" width="250" height="143" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="1498" y="526" font-size="12.5" fill="#1f2328">pre-push hook: no pushes to main</text>
+<rect x="1493" y="530" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="1498" y="543" font-size="12.5" fill="#9a6700">Deny rules: agents can&#x27;t</text>
+<rect x="1493" y="547" width="240" height="17" rx="3" fill="#fff8c5"/>
+<text x="1498" y="560" font-size="12.5" fill="#9a6700">merge or deploy</text>
+<text x="24" y="670" font-size="12.5" fill="#59636e">↺ Review comments or a FAIL verdict go back to 3 · Build as new commits on the same branch.</text>
+<text x="24" y="690" font-size="12.5" fill="#59636e">↺ no-spec: the owner exempts a small harness or config change from 2 and 4; every other check still runs.</text>
+</svg>
