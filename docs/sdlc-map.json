@@ -34,11 +34,11 @@
     {
       "name": "4 · Check",
       "Who": ["+Verifier subagent (fresh context)", "Agent: policy-review skill,", "then archive (/opsx:archive)"],
-      "Produces": ["+verification.md with a verdict", "policy-review.md", "Spec merged into openspec/specs/"],
+      "Produces": ["+verification.md with a verdict", "policy-review.md", "Spec merged into openspec/specs/", "+screenshots/ and screenshots.md"],
       "Rules": ["+.agents/agents/verifier.md", "skills/policy-review"],
-      "Fed by": ["+Change name and diff only,", "+never the builder's summary"],
-      "Checks": ["+Verifier: every scenario has a", "+test or code, every task is done,", "+design followed, nothing extra", "Policy review: security and", "personal data", "~UI screenshots of changed pages"],
-      "Gates": ["spec-check.sh: plan matches diff", "+spec-check.sh: verdict passes", "+spec-check.sh: test commit", "+before the fix"]
+      "Fed by": ["+Change name and diff only,", "+never the builder's summary", "+Saved test session (.auth/,", "+owner signs in once)"],
+      "Checks": ["+Verifier: every scenario has a", "+test or code, every task is done,", "+design followed, nothing extra", "Policy review: security and", "personal data", "+UI screenshots of changed pages,", "+desktop and phone; verifier", "+uses them as evidence"],
+      "Gates": ["spec-check.sh: plan matches diff", "+spec-check.sh: verdict passes", "+spec-check.sh: test commit", "+before the fix", "+spec-check.sh: UI change has", "+screenshots newer than the code"]
     },
     {
       "name": "5 · PR and review",
