@@ -1,16 +1,17 @@
 # The agentic SDLC map
 
-How a change moves through this kit, one column per stage. Every stage has the same five rows:
+How a change moves through this kit, one column per stage. Every stage has the same six rows:
 
 - **Who** does the work.
 - **Produces:** the files or artifacts that come out.
 - **Rules:** the instructions the agent follows at this stage.
 - **Fed by:** the context those rules draw on.
-- **Enforced by:** what checks that the stage happened and was done right (hooks, scripts, CI).
+- **Checks:** what is actually verified at this stage, by tools or agents: tests, mutation testing, the verifier, policy review, AI code review.
+- **Gates:** what stops a change from moving on: approvals, hooks, deny rules, scripts that must pass.
 
-![Agentic SDLC map: six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by and enforced by for each](sdlc-map.svg)
+![Agentic SDLC map: six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by, checks and gates for each](sdlc-map.svg)
 
-Amber lines are in use on the source project and come to the kit in the next release.
+Amber lines are in use on the source project and come to the kit in the next release. Grey dashed lines are planned and not built yet.
 
 ## Escape hatches
 
@@ -27,6 +28,7 @@ python3 tools/render-sdlc-map.py
 ```
 
 - Start a line with `+` to mark it as arriving in the next release (drawn in amber).
+- Start a line with `~` to mark it as planned (grey, dashed). Change it to `+` once it works on the source project.
 - When a release ships, remove the `+` from its lines and add a row to the changelog below.
 - Commit the JSON and the SVG together.
 

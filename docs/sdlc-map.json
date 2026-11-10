@@ -1,8 +1,8 @@
 {
   "title": "Agentic SDLC map",
-  "subtitle": "How a change moves through the kit. Amber lines arrive in the next release (v2.5).",
+  "subtitle": "How a change moves through the kit. Amber lines arrive in the next release (v2.5); grey dashed lines are planned.",
   "next_release": "v2.5",
-  "rows": ["Who", "Produces", "Rules", "Fed by", "Enforced by"],
+  "rows": ["Who", "Produces", "Rules", "Fed by", "Checks", "Gates"],
   "stages": [
     {
       "name": "1 · Request",
@@ -10,7 +10,8 @@
       "Produces": ["Issue or plain request", "with acceptance criteria"],
       "Rules": ["AGENTS.md: every change", "goes through OpenSpec"],
       "Fed by": ["ISSUE_TEMPLATE/", "change-request.md"],
-      "Enforced by": ["Owner's judgement"]
+      "Checks": ["Owner reads the request"],
+      "Gates": ["Owner decides what gets built"]
     },
     {
       "name": "2 · Plan",
@@ -18,7 +19,8 @@
       "Produces": ["openspec/changes/<name>/:", "proposal.md, specs/,", "design.md, tasks.md"],
       "Rules": ["openspec/config.yaml", "AGENTS.md: Specs and Workflows"],
       "Fed by": ["Living specs (openspec/specs/)", "Root and project AGENTS.md", "The code"],
-      "Enforced by": ["openspec validate --strict", "Agent stops for approval"]
+      "Checks": ["openspec validate --strict", "Proposal flags personal data,", "auth, payments, AI providers", "~UI mock-up for page changes"],
+      "Gates": ["Agent stops after propose", "Owner approves the plan"]
     },
     {
       "name": "3 · Build",
@@ -26,7 +28,8 @@
       "Produces": ["Code and tests", "Ticked tasks.md", "+Bug fix: failing test committed", "+first, failing-test.md"],
       "Rules": ["AGENTS.md, project AGENTS.md", "Skills: create-usecase,", "model-change, handler-tests"],
       "Fed by": ["tasks.md and design.md", "+.editorconfig"],
-      "Enforced by": ["Git hooks: no commits to main", "Stop hook: build and tests", "Architecture tests", "+Stop hook: format check", "+Hook locks the failing test", "+Deny: merge, deploy, --no-verify", "+Ask: edits to protected paths"]
+      "Checks": ["Build and unit tests (Stop hook)", "Architecture tests", "+C# format check (Stop hook)", "+Bug fix: test fails first,", "+for the bug's reason"],
+      "Gates": ["Git hooks: no commits to main", "+Failing test locked once committed", "+Deny: merge, deploy, --no-verify", "+Ask: edits to protected paths"]
     },
     {
       "name": "4 · Check",
@@ -34,7 +37,8 @@
       "Produces": ["+verification.md with a verdict", "policy-review.md", "Spec merged into openspec/specs/"],
       "Rules": ["+.agents/agents/verifier.md", "skills/policy-review"],
       "Fed by": ["+Change name and diff only,", "+never the builder's summary"],
-      "Enforced by": ["spec-check.sh: plan matches diff", "+spec-check.sh: verdict passes", "+spec-check.sh: test commit", "+before the fix"]
+      "Checks": ["+Verifier: every scenario has a", "+test or code, every task is done,", "+design followed, nothing extra", "Policy review: security and", "personal data", "~UI screenshots of changed pages"],
+      "Gates": ["spec-check.sh: plan matches diff", "+spec-check.sh: verdict passes", "+spec-check.sh: test commit", "+before the fix"]
     },
     {
       "name": "5 · PR and review",
@@ -42,7 +46,8 @@
       "Produces": ["PR from the template: spec,", "verdict, mutation result,", "migration?, Deploy order"],
       "Rules": ["Project AGENTS.md:", "Code Review Rules", "AGENTS.md: Review guidelines"],
       "Fed by": ["The diff", "The archived change"],
-      "Enforced by": ["Before gh pr create: spec check,", "mutation check (0 survived)", "CI: build, tests, spec check", "+CI: format, protected paths"]
+      "Checks": ["Mutation testing (0 survivors)", "CI: build, tests, spec check", "+CI: format, protected paths", "AI code review (Codex)"],
+      "Gates": ["Before gh pr create: spec check", "and mutation check must pass"]
     },
     {
       "name": "6 · Merge and release",
@@ -50,11 +55,9 @@
       "Produces": ["Merge to main", "Deploys in the PR's Deploy order"],
       "Rules": ["Labels only the owner adds:", "no-spec", "+protected-ok"],
       "Fed by": ["PR checks and review comments", "+Verifier's manual checks"],
-      "Enforced by": ["pre-push hook: no pushes to main", "+Deny rules: agents can't", "+merge or deploy"]
+      "Checks": ["Owner reads checks, review", "comments and the PR", "+Verifier's manual checks"],
+      "Gates": ["Only the owner merges", "pre-push hook: no pushes to main", "+Deny rules: agents can't", "+merge or deploy"]
     }
   ],
-  "loops": [
-    "Review comments or a FAIL verdict go back to 3 · Build as new commits on the same branch.",
-    "no-spec: the owner exempts a small harness or config change from 2 and 4; every other check still runs."
-  ]
+  "loops": ["Review comments or a FAIL verdict go back to 3 · Build as new commits on the same branch.", "no-spec: the owner exempts a small harness or config change from 2 and 4; every other check still runs."]
 }

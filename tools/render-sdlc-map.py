@@ -2,6 +2,7 @@
 """Render docs/sdlc-map.json as docs/sdlc-map.svg: one column per stage, the same rows lined up across columns.
 
 A line starting with "+" arrives in the next release and is drawn in amber.
+A line starting with "~" is planned and is drawn grey with a dashed outline.
 Usage: python3 tools/render-sdlc-map.py   (no dependencies)
 """
 import json
@@ -17,6 +18,7 @@ TITLE_H = 70
 FONT = "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
 INK, MUTED, BORDER, CARD = "#1f2328", "#59636e", "#d0d7de", "#f6f8fa"
 NEXT_INK, NEXT_BG = "#9a6700", "#fff8c5"
+PLAN_INK, PLAN_LINE = "#6e7781", "#8c959f"
 ACCENT = "#0969da"
 
 stages, rows = data["stages"], data["rows"]
@@ -56,11 +58,16 @@ for r, h in zip(rows, row_h):
         out.append(f'<rect x="{x}" y="{y}" width="{COL_W}" height="{h}" rx="6" fill="{CARD}" stroke="{BORDER}"/>')
         ty = y + CARD_PAD + 13
         for line in lines:
-            nxt = line.startswith("+")
-            text = line[1:] if nxt else line
+            nxt, planned = line.startswith("+"), line.startswith("~")
+            text = line[1:] if nxt or planned else line
+            ink, style = INK, ""
             if nxt:
+                ink = NEXT_INK
                 out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{LINE_H}" rx="3" fill="{NEXT_BG}"/>')
-            out.append(f'<text x="{x + 10}" y="{ty}" font-size="12.5" fill="{NEXT_INK if nxt else INK}">{escape(text)}</text>')
+            elif planned:
+                ink, style = PLAN_INK, ' font-style="italic"'
+                out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{LINE_H}" rx="3" fill="none" stroke="{PLAN_LINE}" stroke-dasharray="3 3"/>')
+            out.append(f'<text x="{x + 10}" y="{ty}" font-size="12.5" fill="{ink}"{style}>{escape(text)}</text>')
             ty += LINE_H
     y += h + ROW_GAP
 
