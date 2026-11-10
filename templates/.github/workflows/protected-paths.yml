@@ -1,0 +1,22 @@
+name: Protected paths
+
+# Changes to CI, git hooks, agent settings and hooks, scripts and migrations need the repo owner's approval
+# (see "Git Workflow" in AGENTS.md). The owner adds the `protected-ok` label to skip it.
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  protected-paths:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'protected-ok') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes to protected paths
+        run: scripts/protected-paths.sh

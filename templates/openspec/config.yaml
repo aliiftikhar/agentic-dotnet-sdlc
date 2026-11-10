@@ -10,6 +10,8 @@ context: |
   <Anything else agents must know, e.g. which solution or project not to build.>
 
 rules:
+  proposal:
+    - "A change that will touch UI files (see UI_FILES in scripts/spec-check.sh) comes with a mock-up from scripts/ui-mockups.sh (made-up data only), shown to the owner with the proposal and committed with it before any code; or mockups.md with Mock-up: none and a Reason: (see 'UI changes' in AGENTS.md)"
   design:
     - Reuse the existing structure (use cases, repositories, endpoints) described in AGENTS.md
     - Choose the simplest change that meets the spec, with no speculative abstractions or persistence
@@ -17,3 +19,5 @@ rules:
     - Name every file to be changed by its path, because scripts/spec-check.sh checks them against the diff
     - List the tests added or changed; a new or changed handler needs handler unit tests
     - Changes in <ApiProject> UseCases/, Services/ or Models/ must pass scripts/mutation-check.sh
+    - "A UI change has a task, after the code tasks and before the verifier, that runs scripts/ui-screenshots.sh with the routes showing the change (signed in or guest), including the routes of any mock-up pages so the verifier can compare them, or writes screenshots.md with Screenshots: none and a Reason: (see 'UI changes' in AGENTS.md)"
+    - "For a bug fix (branch fix/), the first task group writes the reproducing test, confirms it fails because of the bug, commits it on its own before any fix, then records it in failing-test.md (see 'Bug fixes' in AGENTS.md); with no test project for the code, it writes failing-test.md with \"Commit: none\", a reason and reproduce steps"

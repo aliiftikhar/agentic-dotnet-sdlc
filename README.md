@@ -7,7 +7,7 @@ Everything here has been used on a real production .NET SaaS before being added.
 ## The loop
 
 ```
-Request → agent proposes a spec → you approve → agent builds on a branch → checks (hooks, tests, mutation, spec matches diff) → PR → CI → AI review → you merge
+Request → agent proposes a spec (and a UI mock-up) → you approve → agent builds on a branch → checks (hooks, tests, mutation, format, screenshots) → a second agent verifies against the spec → PR → CI → AI review → you merge
 ```
 
 See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does the work, what it produces, which rules and files drive it, and what enforces it.
@@ -50,12 +50,25 @@ See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does t
 | `docs/spec-driven.md` | Setup, how a change goes through, how the spec check works, and lessons learned |
 | `docs/examples/add-order-note/` | A complete worked change: proposal, spec, design, tasks and policy review |
 
+### v2.5: stronger verification and guards
+
+| Path | What it is |
+|------|------------|
+| `templates/.agents/agents/verifier.md`, `templates/.claude/agents/`, `templates/.codex/agents/` | A **verifier agent** with a fresh context checks the change against its spec, tasks and design and writes `verification.md`; the spec check needs a passing verdict |
+| `templates/AGENTS.md` ("Bug fixes"), `templates/.claude/hooks/protect-failing-test.sh` | **Failing-test-first bug fixes:** the reproducing test is committed first and locked while the fix is made |
+| `templates/scripts/ui-mockups.sh`, `templates/scripts/ui-mockup-template.html` | **UI mock-ups** drawn with the proposal, styled with the app's own CSS, desktop and phone |
+| `templates/scripts/ui-screenshots.sh` | **UI screenshots** of the changed routes after the build, signed in through a session the owner saved once; agents never type credentials |
+| `templates/scripts/spec-check.sh` | Now also checks the verifier verdict, the failing-test order and the UI mock-up and screenshot records |
+| `templates/.editorconfig`, `templates/global.json`, `templates/scripts/format-check.sh` | **Format check** in the Stop hook and CI, with the SDK pinned |
+| `templates/.claude/settings.json`, `templates/scripts/protected-paths.sh`, `templates/.github/workflows/protected-paths.yml` | **Guards:** deny rules for merging, workflows and hook bypasses; protected paths that need the owner's `protected-ok` label |
+| `docs/verification.md` | Setup, how a change goes through now, why each piece is shaped this way, and lessons learned |
+
 ## Using it today
 
 1. Copy `templates/` into the root of your repository (put `tests/` files into your unit test project).
 2. Replace the `<placeholders>` with your project names and commands, and **run every build, test and check** to make sure it works.
 3. Copy `project-AGENTS.md` into each project folder as `AGENTS.md`, with a `CLAUDE.md` next to it.
-4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`) and OpenSpec (`docs/spec-driven.md`).
+4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`) and verification and guards (`docs/verification.md`).
 5. Put the setup itself through the loop as your first PR.
 
 ## Roadmap
