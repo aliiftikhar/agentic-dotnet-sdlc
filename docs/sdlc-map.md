@@ -11,7 +11,7 @@ How a change moves through this kit, one column per stage. Every stage has the s
 
 ![Agentic SDLC map: six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by, checks and gates for each](sdlc-map.svg)
 
-Everything on the map is in the kit as of v2.5. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
+Everything on the map is in the kit as of v2.6. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
 
 ## Escape hatches
 
@@ -27,7 +27,7 @@ The map is drawn from [`sdlc-map.json`](sdlc-map.json). To change it, edit the J
 python3 tools/render-sdlc-map.py
 ```
 
-- `loops` are drawn as arrows above the stage headers (e.g. review comments back to Build), `skips` as dashed arrows below the grid (e.g. `no-spec`). Each has `from`, `to` (stage numbers) and a short `label`.
+- `loops` are drawn as arrows above the stage headers (e.g. review comments back to Build), `skips` as dashed arrows below the grid (e.g. `no-spec`). Each has `from`, `to` (stage numbers) and a short `label`. `harness_loop` is drawn as a box under the grid, with an arrow in from its `from` stage (`label_in`) and one back up into the Rules row (`label_out`); its `title` and `steps` are the box's text.
 - Each entry in a cell is one point, drawn as a bullet; long points wrap under their bullet, so don't split a point across entries.
 - Start a point with `+` to mark it as arriving in the next release (drawn in amber).
 - Start a point with `~` to mark it as planned (grey, dashed). Change it to `+` once it works on the source project.

@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1762" height="1028" viewBox="0 0 1762 1028" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1762" height="1205" viewBox="0 0 1762 1205" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
 <rect width="100%" height="100%" fill="#ffffff"/>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker><marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8250df"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker><marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8250df"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker><marker id="arrow-eval" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker></defs>
 <text x="24" y="46" font-size="22" font-weight="600" fill="#1f2328">Agentic SDLC map</text>
-<text x="24" y="72" font-size="13" fill="#59636e">How a change moves through the kit, as of v2.5. The purple arrow goes back to Build; dashed arrows skip a stage with the owner&#x27;s no-spec label.</text>
+<text x="24" y="72" font-size="13" fill="#59636e">How a change moves through the kit, as of v2.6. The purple arrow goes back to Build; dashed arrows skip a stage with the owner&#x27;s no-spec label; the green loop tests the harness itself.</text>
 <rect x="128" y="158" width="250" height="40" rx="8" fill="#0969da"/>
 <text x="253.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">1 · Request</text>
 <line x1="380" y1="178.0" x2="398" y2="178.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
@@ -203,6 +203,9 @@
 <text x="1510" y="659" font-size="12.5" fill="#1f2328">comments and the PR</text>
 <circle cx="1501" cy="677" r="2.2" fill="#59636e"/>
 <text x="1510" y="681" font-size="12.5" fill="#1f2328">Verifier&#x27;s manual checks</text>
+<circle cx="1501" cy="699" r="2.2" fill="#59636e"/>
+<text x="1510" y="703" font-size="12.5" fill="#1f2328">Harness change: owner runs the</text>
+<text x="1510" y="720" font-size="12.5" fill="#1f2328">smoke evals</text>
 <text x="24" y="822" font-size="13" font-weight="600" fill="#59636e">Gates</text>
 <rect x="128" y="799" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
 <circle cx="141" cy="818" r="2.2" fill="#59636e"/>
@@ -256,4 +259,14 @@
 <text x="525.0" y="982" font-size="12" fill="#6e7781" text-anchor="middle">&quot;no-spec&quot; github label skips [2. Plan] step.</text>
 <path d="M821.0,942 V964 H1317.0 V943" fill="none" stroke="#6e7781" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-skip)"/>
 <text x="1069.0" y="982" font-size="12" fill="#6e7781" text-anchor="middle">&quot;no-spec&quot; github label skips [4. Check] step.</text>
+<rect x="168" y="1048" width="1298" height="133" rx="8" fill="#f0fff4" stroke="#1a7f37" stroke-width="1.5"/>
+<text x="184" y="1070" font-size="14" font-weight="600" fill="#1a7f37">↻ Harness evals: when AGENTS.md, skills, hooks, agents or check scripts change</text>
+<text x="190" y="1096" font-size="12.5" fill="#1f2328">1. Owner runs scripts/eval-run.sh: the smoke set (~5 tasks), or all tasks for a baseline</text>
+<text x="190" y="1118" font-size="12.5" fill="#1f2328">2. Real tasks from the repo (remove, replay, bugfix) go through stages 1 to 6 in a throwaway copy</text>
+<text x="190" y="1140" font-size="12.5" fill="#1f2328">3. Scored on 6 checks: committed, unit, spec, mutation, format, hidden answer-key tests</text>
+<text x="190" y="1162" font-size="12.5" fill="#1f2328">4. Compared with the last run at the same agent, model and effort: keep or revert the change</text>
+<path d="M1613.0,942 V1114.5 H1469" fill="none" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-eval)"/>
+<text x="1605.0" y="1027.25" font-size="12.5" font-weight="600" fill="#1a7f37" text-anchor="end">harness change merged</text>
+<path d="M166,1114.5 H112 V462.0 H125" fill="none" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-eval)"/>
+<text x="104" y="788.25" font-size="12.5" font-weight="600" fill="#1a7f37" text-anchor="middle" transform="rotate(-90 104 788.25)">results shape the Rules</text>
 </svg>

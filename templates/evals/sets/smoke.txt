@@ -1,0 +1,7 @@
+# Smoke set: run after each harness change. One task id per line (the file names in evals/tasks/
+# without .md). Pick about 5 that cover each kind (remove, replay, bugfix) and a small and a medium task.
+# <R01-task-id>
+# <R08-task-id>
+# <P03-task-id>
+# <P04-task-id>
+# <B01-task-id>

@@ -8,6 +8,8 @@ Everything here has been used on a real production .NET SaaS before being added.
 
 ```
 Request → agent proposes a spec (and a UI mock-up) → you approve → agent builds on a branch → checks (hooks, tests, mutation, format, screenshots) → a second agent verifies against the spec → PR → CI → AI review → you merge
+
+When the harness itself changes: you run the harness evals → the same real tasks go through the loop above → compare with the last run → keep or revert
 ```
 
 See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does the work, what it produces, which rules and files drive it, and what enforces it.
@@ -63,12 +65,22 @@ See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does t
 | `templates/.claude/settings.json`, `templates/scripts/protected-paths.sh`, `templates/.github/workflows/protected-paths.yml` | **Guards:** deny rules for merging, workflows and hook bypasses; protected paths that need the owner's `protected-ok` label |
 | `docs/verification.md` | Setup, how a change goes through now, why each piece is shaped this way, and lessons learned |
 
+### v2.6: harness evals
+
+| Path | What it is |
+|------|------------|
+| `templates/scripts/eval-run.sh`, `templates/scripts/eval_run.py` | **Eval runner:** gives real tasks from your repo to Claude Code or Codex in a history-free snapshot with no remote, through the normal flow, and scores six checks (committed on a branch, unit, spec, mutation, format, hidden answer-key tests); `--check` keeps tasks valid for free |
+| `templates/evals/` | Task format (`tasks/README.md`) and the smoke set (`sets/smoke.txt`) run after every harness change |
+| `templates/AGENTS.md` ("Evals") | When to run, who runs it (the owner), defaults for model and effort, and that agents never edit tasks or results |
+| `docs/examples/evals/` | Three example tasks, one of each kind (remove, replay, bugfix) |
+| `docs/evals.md` | Setup, how a run works, why it's shaped this way, Codex and Claude Code specifics, and lessons learned |
+
 ## Using it today
 
 1. Copy `templates/` into the root of your repository (put `tests/` files into your unit test project).
 2. Replace the `<placeholders>` with your project names and commands, and **run every build, test and check** to make sure it works.
 3. Copy `project-AGENTS.md` into each project folder as `AGENTS.md`, with a `CLAUDE.md` next to it.
-4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`) and verification and guards (`docs/verification.md`).
+4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`) and harness evals (`docs/evals.md`).
 5. Put the setup itself through the loop as your first PR.
 
 ## Roadmap

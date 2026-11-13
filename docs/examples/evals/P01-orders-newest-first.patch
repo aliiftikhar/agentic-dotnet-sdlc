@@ -1,0 +1,32 @@
+diff --git a/Shop.Api.UnitTests/UseCases/GetOrders/GetOrdersHandlerTests.cs b/Shop.Api.UnitTests/UseCases/GetOrders/GetOrdersHandlerTests.cs
+--- a/Shop.Api.UnitTests/UseCases/GetOrders/GetOrdersHandlerTests.cs
++++ b/Shop.Api.UnitTests/UseCases/GetOrders/GetOrdersHandlerTests.cs
+@@ -40,22 +40,6 @@ public class GetOrdersHandlerTests
+     }
+ 
+-    [Test]
+-    public async Task Handle_ReturnsNewestOrderFirst()
+-    {
+-        var older = new Order { Id = Guid.NewGuid(), PlacedAt = new DateTime(2026, 1, 1) };
+-        var newer = new Order { Id = Guid.NewGuid(), PlacedAt = new DateTime(2026, 2, 1) };
+-        _repository.Setup(r => r.GetOrders("user-1")).ReturnsAsync([older, newer]);
+-
+-        var result = await _handler.Handle(new GetOrdersRequest(), CancellationToken.None);
+-
+-        Assert.That(result.Orders.Select(o => o.Id), Is.EqualTo(new[] { newer.Id, older.Id }));
+-    }
+-
+     [Test]
+     public void Handle_NoUser_ThrowsUnauthorizedAccessException()
+     {
+diff --git a/Shop.Api/UseCases/GetOrders/GetOrdersHandler.cs b/Shop.Api/UseCases/GetOrders/GetOrdersHandler.cs
+--- a/Shop.Api/UseCases/GetOrders/GetOrdersHandler.cs
++++ b/Shop.Api/UseCases/GetOrders/GetOrdersHandler.cs
+@@ -21,7 +21,7 @@ public class GetOrdersHandler(IGetOrdersRepository repository, IAuthService auth
+         var orders = await _repository.GetOrders(userId);
+         return new GetOrdersResponse
+         {
+-            Orders = orders.OrderByDescending(o => o.PlacedAt).Select(ToSummary).ToList()
++            Orders = orders.Select(ToSummary).ToList()
+         };
+     }
