@@ -116,6 +116,22 @@ It needs the .NET 8 runtime (Stryker.NET 4.x runs on .NET 8; don't let it roll f
 
 If a mutant genuinely can't be killed (the change has no observable effect), disable it with a `// Stryker disable once <mutator> : <reason>` comment and call it out in the PR. Files whose change is whitespace only are skipped. Paste the script's final line into the PR template. In Claude Code, a hook runs it automatically before `gh pr create`.
 
+### Evals — Testing the Harness Itself
+
+`evals/tasks/` holds real tasks cut from this repo (a use case removed, a past change undone, a bug put in), each with hidden tests as the answer key. `scripts/eval-run.sh` gives them to an agent in a temporary, history-free copy of `main` with no remote, runs the normal flow (propose, an automatic approval, apply, verify, archive) and scores six checks: work committed on a branch, unit tests, spec check, mutation check, format check, and the hidden tests.
+
+```bash
+scripts/eval-run.sh --check                        # tasks still valid against main (no agent)
+scripts/eval-run.sh --agent claude --tasks smoke   # the smoke set (evals/sets/smoke.txt)
+scripts/eval-run.sh --agent codex                  # all tasks
+scripts/eval-run.sh --agent claude --model <model> --effort high --tasks smoke   # another model or effort
+```
+
+- **Smoke set** (`evals/sets/smoke.txt`, about 5 tasks covering each kind and size): run it after each harness change. Run all tasks only for an occasional baseline or after a big change. `--tasks` also takes task ids, comma-separated.
+- Only the repo owner starts a run: it uses their Claude and Codex plans. Suggest one after a change to `AGENTS.md`, skills, hooks, `.agents/agents/` or the check scripts, and when `--check` fails after a change to code a task uses.
+- Defaults (model per agent, effort `medium`) are set at the top of `scripts/eval_run.py`; compare runs only at the same model and effort. Results go to `evals/results/<date>-<agent>-<model>-<effort>.jsonl` (committed); the summary compares the run with the previous one for the same agent, model and effort.
+- Never edit `evals/tasks/` or results to make a run pass, and never read `evals/` while working on a normal change. If a task no longer fits the code, fix or replace it in its own change.
+
 ## Git Workflow
 
 - Never commit directly to `main`. Make each change on its own branch with a short, descriptive name (e.g. `fix/login-redirect`). Git hooks in `.githooks/` block commits on `main` and pushes to `main`; in a fresh clone, turn them on with `git config core.hooksPath .githooks`. Never bypass them with `--no-verify`.

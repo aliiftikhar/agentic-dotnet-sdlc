@@ -1,7 +1,7 @@
 {
   "title": "Agentic SDLC map",
-  "subtitle": "How a change moves through the kit, as of v2.5. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label.",
-  "next_release": "v2.5",
+  "subtitle": "How a change moves through the kit, as of v2.6. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label; the green loop tests the harness itself.",
+  "next_release": "v2.6",
   "rows": ["Who", "Produces", "Rules", "Fed by", "Checks", "Gates"],
   "stages": [
     {
@@ -55,7 +55,7 @@
       "Produces": ["Merge to main", "Deploys in the PR's Deploy order"],
       "Rules": ["Labels only the owner adds: no-spec, protected-ok"],
       "Fed by": ["PR checks and review comments", "Verifier's manual checks"],
-      "Checks": ["Owner reads checks, review comments and the PR", "Verifier's manual checks"],
+      "Checks": ["Owner reads checks, review comments and the PR", "Verifier's manual checks", "Harness change: owner runs the smoke evals"],
       "Gates": ["Only the owner merges", "pre-push hook: no pushes to main", "Deny rules: agents can't merge or deploy"]
     }
   ],
@@ -65,5 +65,17 @@
   "skips": [
     {"from": 1, "to": 3, "label": "\"no-spec\" github label skips [2. Plan] step."},
     {"from": 3, "to": 5, "label": "\"no-spec\" github label skips [4. Check] step."}
-  ]
+  ],
+  "harness_loop": {
+    "from": 6,
+    "title": "Harness evals: when AGENTS.md, skills, hooks, agents or check scripts change",
+    "steps": [
+      "Owner runs scripts/eval-run.sh: the smoke set (~5 tasks), or all tasks for a baseline",
+      "Real tasks from the repo (remove, replay, bugfix) go through stages 1 to 6 in a throwaway copy",
+      "Scored on 6 checks: committed, unit, spec, mutation, format, hidden answer-key tests",
+      "Compared with the last run at the same agent, model and effort: keep or revert the change"
+    ],
+    "label_in": "harness change merged",
+    "label_out": "results shape the Rules"
+  }
 }

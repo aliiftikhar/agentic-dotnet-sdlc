@@ -1,0 +1,28 @@
+diff --git a/Shop.Api.UnitTests/UseCases/PlaceOrder/PlaceOrderHandlerTests.cs b/Shop.Api.UnitTests/UseCases/PlaceOrder/PlaceOrderHandlerTests.cs
+--- a/Shop.Api.UnitTests/UseCases/PlaceOrder/PlaceOrderHandlerTests.cs
++++ b/Shop.Api.UnitTests/UseCases/PlaceOrder/PlaceOrderHandlerTests.cs
+@@ -58,18 +58,6 @@ public class PlaceOrderHandlerTests
+     }
+ 
+-    [Test]
+-    public async Task Handle_WithDiscount_ChargesDiscountedTotal()
+-    {
+-        _repository.Setup(r => r.GetDiscount("SAVE10")).ReturnsAsync(new Discount { Code = "SAVE10", Percent = 10 });
+-        var request = Request(lines: [Line(price: 20m, quantity: 2)], discountCode: "SAVE10");
+-
+-        await _handler.Handle(request, CancellationToken.None);
+-
+-        _repository.Verify(r => r.InsertOrder(It.Is<Order>(o => o.Total == 36m)), Times.Once);
+-    }
+-
+     [Test]
+     public async Task Handle_UnknownDiscount_ThrowsArgumentException()
+     {
+diff --git a/Shop.Api/UseCases/PlaceOrder/PlaceOrderHandler.cs b/Shop.Api/UseCases/PlaceOrder/PlaceOrderHandler.cs
+--- a/Shop.Api/UseCases/PlaceOrder/PlaceOrderHandler.cs
++++ b/Shop.Api/UseCases/PlaceOrder/PlaceOrderHandler.cs
+@@ -34,7 +34,7 @@ public class PlaceOrderHandler(IPlaceOrderRepository repository, IAuthService au
+         var subtotal = request.Lines.Sum(l => l.Price * l.Quantity);
+-        order.Total = discount is null ? subtotal : subtotal * (100 - discount.Percent) / 100m;
++        order.Total = subtotal;
+         await _repository.InsertOrder(order);

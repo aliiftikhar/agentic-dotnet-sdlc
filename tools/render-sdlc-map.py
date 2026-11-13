@@ -5,6 +5,8 @@ Each entry in a cell is one point, drawn as a bullet and wrapped to the column w
 A point starting with "+" arrives in the next release and is drawn in amber.
 A point starting with "~" is planned and is drawn grey with a dashed outline.
 "loops" are drawn as arrows above the stage headers (going back), "skips" as dashed arrows below the grid.
+"harness_loop" is drawn as a green box under the grid: an arrow from its stage into the box, and one from the
+box back up into the Rules row, for checks on the harness itself rather than on one change.
 Usage: python3 tools/render-sdlc-map.py   (no dependencies)
 """
 import json
@@ -25,6 +27,8 @@ NEXT_INK, NEXT_BG = "#9a6700", "#fff8c5"
 PLAN_INK, PLAN_LINE = "#6e7781", "#8c959f"
 ACCENT = "#0969da"
 LOOP_INK, SKIP_INK = "#8250df", "#6e7781"
+EVAL_INK, EVAL_BG = "#1a7f37", "#f0fff4"
+EVAL_GAP, EVAL_TITLE_H = 44, 30   # space between the skips and the harness box; the box's title line
 
 stages, rows = data["stages"], data["rows"]
 
@@ -63,14 +67,32 @@ head_y = PAD + TITLE_H + (LOOP_H if data.get("loops") else 0)
 grid_top = head_y + HEADER_H + 12
 grid_h = sum(row_h) + ROW_GAP * (len(rows) - 1)
 grid_bottom = grid_top + grid_h
-height = grid_bottom + (SKIP_H if data.get("skips") else 0) + PAD
+harness = data.get("harness_loop")
+eval_top = grid_bottom + (SKIP_H if data.get("skips") else 0) + EVAL_GAP
+eval_x = col_x_0 = PAD + LABEL_W + 40
+eval_w = PAD + LABEL_W + (len(stages) - 1) * (COL_W + GAP) - GAP - eval_x   # up to the end of the second-last stage
+eval_steps = []
+if harness:
+    max_w = (eval_w - 44) / FONT_SIZE
+    for n, step in enumerate(harness["steps"], 1):
+        lines, line = [], ""
+        for word in f"{n}. {step}".split(" "):
+            test = f"{line} {word}" if line else word
+            if line and sum(map(char_w, test)) > max_w:
+                lines.append(line)
+                line = word
+            else:
+                line = test
+        eval_steps.append(lines + [line])
+eval_h = EVAL_TITLE_H + sum(len(l) for l in eval_steps) * LINE_H + (len(eval_steps) - 1) * BULLET_GAP + 2 * CARD_PAD
+height = (eval_top + eval_h if harness else grid_bottom + (SKIP_H if data.get("skips") else 0)) + PAD
 
 out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" font-family="{FONT}">',
        f'<rect width="100%" height="100%" fill="#ffffff"/>',
        '<defs>' + "".join(
            f'<marker id="{name}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">'
            f'<path d="M0,0 L10,5 L0,10 z" fill="{color}"/></marker>'
-           for name, color in (("arrow", ACCENT), ("arrow-loop", LOOP_INK), ("arrow-skip", SKIP_INK))) + '</defs>',
+           for name, color in (("arrow", ACCENT), ("arrow-loop", LOOP_INK), ("arrow-skip", SKIP_INK), ("arrow-eval", EVAL_INK))) + '</defs>',
        f'<text x="{PAD}" y="{PAD + 22}" font-size="22" font-weight="600" fill="{INK}">{escape(data["title"])}</text>',
        f'<text x="{PAD}" y="{PAD + 48}" font-size="13" fill="{MUTED}">{escape(data["subtitle"])}</text>']
 
@@ -126,6 +148,26 @@ for skip in data.get("skips", []):
     start, end = col_mid(skip["from"]) + 24, col_mid(skip["to"]) - 24
     out.append(f'<path d="M{start},{grid_bottom + 2} V{line_y} H{end} V{grid_bottom + 3}" fill="none" stroke="{SKIP_INK}" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-skip)"/>')
     out.append(f'<text x="{(start + end) / 2}" y="{line_y + 18}" font-size="12" fill="{SKIP_INK}" text-anchor="middle">{escape(skip["label"])}</text>')
+
+# Harness loop: from its stage down into a box under the grid, then back up into the Rules row of the first stage.
+if harness:
+    out.append(f'<rect x="{eval_x}" y="{eval_top}" width="{eval_w}" height="{eval_h}" rx="8" fill="{EVAL_BG}" stroke="{EVAL_INK}" stroke-width="1.5"/>')
+    out.append(f'<text x="{eval_x + 16}" y="{eval_top + 22}" font-size="14" font-weight="600" fill="{EVAL_INK}">↻ {escape(harness["title"])}</text>')
+    ty = eval_top + EVAL_TITLE_H + CARD_PAD + 8
+    for lines in eval_steps:
+        for line in lines:
+            out.append(f'<text x="{eval_x + 22}" y="{ty}" font-size="{FONT_SIZE}" fill="{INK}">{escape(line)}</text>')
+            ty += LINE_H
+        ty += BULLET_GAP
+    mid_y = eval_top + eval_h / 2
+    src = col_mid(harness["from"])
+    out.append(f'<path d="M{src},{grid_bottom + 2} V{mid_y} H{eval_x + eval_w + 3}" fill="none" stroke="{EVAL_INK}" stroke-width="2" marker-end="url(#arrow-eval)"/>')
+    out.append(f'<text x="{src - 8}" y="{(grid_bottom + mid_y) / 2}" font-size="12.5" font-weight="600" fill="{EVAL_INK}" text-anchor="end">{escape(harness["label_in"])}</text>')
+    rules = rows.index("Rules")
+    rules_y = grid_top + sum(row_h[:rules]) + ROW_GAP * rules + row_h[rules] / 2
+    back_x = PAD + LABEL_W - 16
+    out.append(f'<path d="M{eval_x - 2},{mid_y} H{back_x} V{rules_y} H{col_x(0) - 3}" fill="none" stroke="{EVAL_INK}" stroke-width="2" marker-end="url(#arrow-eval)"/>')
+    out.append(f'<text x="{back_x - 8}" y="{(rules_y + mid_y) / 2}" font-size="12.5" font-weight="600" fill="{EVAL_INK}" text-anchor="middle" transform="rotate(-90 {back_x - 8} {(rules_y + mid_y) / 2})">{escape(harness["label_out"])}</text>')
 
 out.append("</svg>")
 (root / "docs/sdlc-map.svg").write_text("\n".join(out) + "\n")
