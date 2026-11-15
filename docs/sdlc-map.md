@@ -11,7 +11,7 @@ How a change moves through this kit, one column per stage. Every stage has the s
 
 ![Agentic SDLC map: six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by, checks and gates for each](sdlc-map.svg)
 
-Everything on the map is in the kit as of v2.6. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
+Everything on the map is in the kit as of v2.7. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
 
 ## Escape hatches
 

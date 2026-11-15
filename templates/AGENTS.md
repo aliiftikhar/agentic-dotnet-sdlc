@@ -125,11 +125,13 @@ scripts/eval-run.sh --check                        # tasks still valid against m
 scripts/eval-run.sh --agent claude --tasks smoke   # the smoke set (evals/sets/smoke.txt)
 scripts/eval-run.sh --agent codex                  # all tasks
 scripts/eval-run.sh --agent claude --model <model> --effort high --tasks smoke   # another model or effort
+scripts/eval-run.sh --agent claude --plan-model <model> --build-model <model> --verify-model <model> --tasks smoke   # a model per step
 ```
 
 - **Smoke set** (`evals/sets/smoke.txt`, about 5 tasks covering each kind and size): run it after each harness change. Run all tasks only for an occasional baseline or after a big change. `--tasks` also takes task ids, comma-separated.
 - Only the repo owner starts a run: it uses their Claude and Codex plans. Suggest one after a change to `AGENTS.md`, skills, hooks, `.agents/agents/` or the check scripts, and when `--check` fails after a change to code a task uses.
-- Defaults (model per agent, effort `medium`) are set at the top of `scripts/eval_run.py`; compare runs only at the same model and effort. Results go to `evals/results/<date>-<agent>-<model>-<effort>.jsonl` (committed); the summary compares the run with the previous one for the same agent, model and effort.
+- Defaults (model per agent, effort `medium`) are set at the top of `scripts/eval_run.py`. `--plan-model`, `--build-model` and `--verify-model` set one step's model (the runner sets the verifier's model in the snapshot only). Compare runs only when the step models and effort all match. Results go to `evals/results/<date>-<agent>-<config>-<effort>.jsonl` (committed; `<config>` is the model, or `<plan>-<build>-<verify>`); the summary compares the run with the previous one with the same configuration.
+- A usage limit or an unreachable API stops the run (exit 75) without recording that task; rerun with the printed `--run-id` to continue. Never delete result lines by hand.
 - Never edit `evals/tasks/` or results to make a run pass, and never read `evals/` while working on a normal change. If a task no longer fits the code, fix or replace it in its own change.
 
 ## Git Workflow

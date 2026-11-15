@@ -47,7 +47,7 @@ Each task gets one JSON line in `evals/results/<date>-<agent>-<model>-<effort>.j
 - the branch the agent used, whether it left anything uncommitted, and how many times the verifier said FAIL;
 - whether a plan usage limit cut the run short.
 
-The summary compares the run with the previous one at the **same agent, model and effort**.
+The summary compares the run with the previous one at the **same agent, step models and effort**. To give each step of the flow its own model, see [model-per-step.md](model-per-step.md).
 
 ## Why it's shaped this way
 
