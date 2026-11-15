@@ -1,7 +1,7 @@
 {
   "title": "Agentic SDLC map",
-  "subtitle": "How a change moves through the kit, as of v2.6. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label; the green loop tests the harness itself.",
-  "next_release": "v2.6",
+  "subtitle": "How a change moves through the kit, as of v2.7. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label; the green loop tests the harness itself.",
+  "next_release": "v2.7",
   "rows": ["Who", "Produces", "Rules", "Fed by", "Checks", "Gates"],
   "stages": [
     {

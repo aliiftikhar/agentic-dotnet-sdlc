@@ -75,12 +75,20 @@ See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does t
 | `docs/examples/evals/` | Three example tasks, one of each kind (remove, replay, bugfix) |
 | `docs/evals.md` | Setup, how a run works, why it's shaped this way, Codex and Claude Code specifics, and lessons learned |
 
+### v2.7: a model per step
+
+| Path | What it is |
+|------|------------|
+| `templates/scripts/eval_run.py` | `--plan-model`, `--build-model`, `--verify-model`: run each step of the flow on its own model; a usage limit or API outage stops the run without scoring it, and `--run-id` continues it |
+| `templates/scripts/eval-configs.sh` | Runs several plan/build/verify configurations in turn and waits out usage limits |
+| `docs/model-per-step.md` | How to set a model per step, how to measure your own, and the measured results: Sonnet for every step won |
+
 ## Using it today
 
 1. Copy `templates/` into the root of your repository (put `tests/` files into your unit test project).
 2. Replace the `<placeholders>` with your project names and commands, and **run every build, test and check** to make sure it works.
 3. Copy `project-AGENTS.md` into each project folder as `AGENTS.md`, with a `CLAUDE.md` next to it.
-4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`) and harness evals (`docs/evals.md`).
+4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`), harness evals (`docs/evals.md`) and models per step (`docs/model-per-step.md`).
 5. Put the setup itself through the loop as your first PR.
 
 ## Roadmap

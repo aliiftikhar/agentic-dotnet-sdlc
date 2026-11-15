@@ -38,6 +38,11 @@ RESULTS_DIR = REPO / "evals" / "results"
 LOGS_DIR = RESULTS_DIR / "logs"  # agent transcripts and check output; git-ignored
 HIDDEN_DIR = f"{TEST_PROJECT}/EvalHidden"
 
+LIMIT_EXIT = 75  # exit code when a usage limit or API outage stops the run; rerun with the same --run-id
+# Matched against the agent's final message, and its raw output only when the turn errored.
+LIMIT_RE = re.compile(r"connection_failed|can't reach the API server|usage.limit|hit your [\w -]*limit|"
+                      r"limit reached|session limit|weekly limit|usage_limit_reached", re.I)
+
 APPROVAL = ("Approved. Apply it and finish the change up to the archive, committing on your branch. "
             "There is no remote: don't push or open a pull request.")
 
@@ -185,10 +190,29 @@ def apply_setup(folder, task):
         raise RuntimeError(f"unknown setup {task['setup']}")
 
 
-def prepare_start(folder, task):
-    """Read the answer key, apply the task, remove evals/, commit the agent's starting point."""
+def set_verifier_model(folder, agent, model):
+    """Point the snapshot's verifier subagent at its own model. The repo's own files don't change."""
+    if agent == "claude":
+        path = folder / ".claude" / "agents" / "verifier.md"
+        text, count = re.subn(r"^model: .*$", f"model: {model}", path.read_text(), count=1, flags=re.M)
+        if count != 1:
+            raise RuntimeError(f"{path.name}: no model line to set")
+    else:
+        path = folder / ".codex" / "agents" / "verifier.toml"
+        if not path.is_file():
+            raise RuntimeError(f"{path.relative_to(folder)} not found: --verify-model needs a Codex verifier agent file")
+        text = re.sub(r'^model = .*\n', "", path.read_text(), flags=re.M)
+        text = text.replace("\n", f'\nmodel = "{model}"\n', 1)
+    path.write_text(text)
+
+
+def prepare_start(folder, task, verifier=None):
+    """Read the answer key, apply the task, remove evals/, commit the agent's starting point.
+    verifier: (agent, model) to set the verifier subagent's model, or None to leave it as it is."""
     hidden = {p: (folder / p).read_text() for p in task["hidden_tests"]}
     apply_setup(folder, task)
+    if verifier:
+        set_verifier_model(folder, *verifier)
     shutil.rmtree(folder / "evals", ignore_errors=True)
     # A fresh repository, not a squash: the old commit would stay in the reflog and object store,
     # and the agent could recover the answer key from it.
@@ -260,7 +284,7 @@ def run_claude(folder, prompt, model, effort, session, timeout):
     except ValueError:
         return info
     usage = data.get("usage") or {}
-    info.update(session=data.get("session_id"), message=data.get("result") or "",
+    info.update(session=data.get("session_id"), message=data.get("result") or "", is_error=data.get("is_error"),
                 cost=data.get("total_cost_usd"),
                 input_tokens=sum(usage.get(k) or 0 for k in
                                  ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")),
@@ -371,25 +395,29 @@ def run_task(task, args, run_id, sha, version, log_dir):
     folder, _ = make_snapshot(args.ref)
     started = time.time()
     record = {"run_id": run_id, "task": task["id"], "kind": task["kind"], "agent": args.agent,
-              "model": args.model, "effort": args.effort, "cli_version": version, "harness_sha": sha}
+              "model": args.build_model, "plan_model": args.plan_model, "build_model": args.build_model,
+              "verify_model": args.verify_model, "effort": args.effort, "cli_version": version, "harness_sha": sha}
     log = []
     try:
-        hidden = prepare_start(folder, task)
+        # The verifier inherits the build turn's model unless told otherwise.
+        verifier = (args.agent, args.verify_model) if args.verify_model != args.build_model else None
+        hidden = prepare_start(folder, task, verifier)
         run_tests(folder)  # restore and build once, so the agent starts warm
         agent = run_claude if args.agent == "claude" else run_codex
         deadline = started + TIMEOUT_MINUTES * 60
 
-        first = agent(folder, task["request"], args.model, args.effort, None, max(60, deadline - time.time()))
+        first = agent(folder, task["request"], args.plan_model, args.effort, None, max(60, deadline - time.time()))
         log.append(first["raw"])
         record["stopped_after_propose"] = all(p.startswith("openspec/") for p in changed_paths(folder))
         turns = [first]
         if first.get("session") and first["code"] != 124:
-            second = agent(folder, APPROVAL, args.model, args.effort, first["session"], max(60, deadline - time.time()))
+            second = agent(folder, APPROVAL, args.build_model, args.effort, first["session"], max(60, deadline - time.time()))
             log.append(second["raw"])
             turns.append(second)
         timed_out = any(t["code"] == 124 for t in turns)
-        # A plan's usage limit ends the run early; mark it so it isn't read as the harness failing.
-        limit_hit = any("usage limit" in (t.get("raw") or "").lower() for t in turns)
+        # A usage limit or API outage ends the run early; the task is rerun later, not scored as a failure.
+        limit_hit = any(LIMIT_RE.search((t.get("message") or "") + ((t.get("raw") or "") if t["code"] or t.get("is_error") else ""))
+                        for t in turns)
 
         record.update(
             minutes=round((time.time() - started) / 60, 1),
@@ -429,7 +457,20 @@ def run_task(task, args, run_id, sha, version, log_dir):
     return record
 
 
+def step_models(record):
+    """(plan, build, verify) models of a result line; lines without them used one model for every step."""
+    model = record.get("model")
+    return (record.get("plan_model") or model, record.get("build_model") or model, record.get("verify_model") or model)
+
+
+def config_name(plan, build, verify):
+    return plan if plan == build == verify else f"{plan}-{build}-{verify}"
+
+
 def summarise(agent, run_id, records):
+    if not records:
+        print("\nNo tasks finished in this run.")
+        return
     passed = sum(r["passed"] for r in records)
     minutes = sum(r.get("minutes") or 0 for r in records)
     cost = sum(r.get("cost_usd") or 0 for r in records)
@@ -437,21 +478,20 @@ def summarise(agent, run_id, records):
           + (f", ${cost:.2f} reported" if cost else ""))
     for r in records:
         checks = " ".join(f"{k}={v}" for k, v in (r.get("checks") or {}).items()) or r.get("error", "")
-        note = "  (usage limit hit: rerun this task)" if r.get("limit_hit") else ""
-        print(f"  {'PASS' if r['passed'] else 'fail'} {r['task']}  {checks}{note}")
+        print(f"  {'PASS' if r['passed'] else 'fail'} {r['task']}  {checks}")
 
-    model, effort = records[0].get("model"), records[0].get("effort")
+    config, effort = step_models(records[0]), records[0].get("effort")
     earlier = []
     for f in RESULTS_DIR.glob("*.jsonl"):
         for line in f.read_text().splitlines():
             if line.strip():
                 r = json.loads(line)
-                # Only runs at the same model and effort compare fairly; older lines with no effort never match.
-                if (r["agent"] == agent and r["run_id"] < run_id and r.get("model") == model
+                # Only runs with the same step models and effort compare fairly; lines with no effort never match.
+                if (r["agent"] == agent and r["run_id"] < run_id and step_models(r) == config
                         and r.get("effort") is not None and r.get("effort") == effort):
                     earlier.append(r)
     if not earlier:
-        print(f"No earlier run for {agent} at {model}, effort {effort}, to compare with.")
+        print(f"No earlier run for {agent} at {'/'.join(config)}, effort {effort}, to compare with.")
         return
     previous_id = max(r["run_id"] for r in earlier)
     previous = {r["task"]: r for r in earlier if r["run_id"] == previous_id}
@@ -474,6 +514,10 @@ def main():
     parser.add_argument("--check", action="store_true", help="check the tasks are valid, without an agent")
     parser.add_argument("--agent", choices=["claude", "codex"])
     parser.add_argument("--model", help=f"default: {DEFAULT_MODEL['claude']} for claude, {DEFAULT_MODEL['codex']} for codex")
+    parser.add_argument("--plan-model", help="model for the first turn (propose); default: --model")
+    parser.add_argument("--build-model", help="model for the resumed turn (apply, policy review, archive); default: --model")
+    parser.add_argument("--verify-model", help="model for the verifier subagent; default: --model")
+    parser.add_argument("--run-id", help="continue this run: skip tasks it already recorded and append to its results file")
     parser.add_argument("--effort", default=DEFAULT_EFFORT,
                         help=f"reasoning effort passed to the agent (default: {DEFAULT_EFFORT})")
     parser.add_argument("--tasks", help="comma-separated task ids or set names from evals/sets/ (e.g. smoke); default: all")
@@ -489,19 +533,37 @@ def main():
     if not args.agent:
         parser.error("--agent or --check is required")
     args.model = args.model or DEFAULT_MODEL[args.agent]
+    args.plan_model = args.plan_model or args.model
+    args.build_model = args.build_model or args.model
+    args.verify_model = args.verify_model or args.model
+    config = config_name(args.plan_model, args.build_model, args.verify_model)
 
-    run_id = dt.datetime.now().strftime("%Y-%m-%dT%H%M")
+    run_id = args.run_id or dt.datetime.now().strftime("%Y-%m-%dT%H%M")
     sha = git(REPO, "rev-parse", args.ref)
     version = cli_version(args.agent)
-    results = RESULTS_DIR / f"{run_id[:10]}-{args.agent}-{args.model}-{args.effort}.jsonl"
-    log_dir = LOGS_DIR / f"{run_id}-{args.agent}"
+    results = RESULTS_DIR / f"{run_id[:10]}-{args.agent}-{config}-{args.effort}.jsonl"
+    log_dir = LOGS_DIR / f"{run_id}-{args.agent}-{config}"
     log_dir.mkdir(parents=True, exist_ok=True)
-    print(f"Running {len(tasks)} task(s) with {version} ({args.model}, effort {args.effort}) on {args.ref} ({sha[:7]}); logs in {log_dir}")
 
     records = []
-    for task in tasks:
+    if results.exists():
+        records = [r for r in map(json.loads, filter(str.strip, results.read_text().splitlines()))
+                   if r["run_id"] == run_id]
+    done = {r["task"] for r in records}
+    todo = [t for t in tasks if t["id"] not in done]
+    print(f"Running {len(todo)} task(s) with {version} (plan {args.plan_model}, build {args.build_model}, "
+          f"verify {args.verify_model}, effort {args.effort}) on {args.ref} ({sha[:7]}); run {run_id}"
+          + (f", {len(done)} already done" if done else "") + f"; logs in {log_dir}")
+
+    for n, task in enumerate(todo):
         print(f"- {task['id']} ...", flush=True)
         record = run_task(task, args, run_id, sha, version, log_dir)
+        if record.get("limit_hit"):
+            left = [t["id"] for t in todo[n:]]
+            print(f"  usage limit or API outage after {record.get('minutes')} min; not recorded. Left: {', '.join(left)}", flush=True)
+            print(f"  Continue with the same command plus --run-id {run_id}", flush=True)
+            summarise(args.agent, run_id, records)
+            sys.exit(LIMIT_EXIT)
         records.append(record)
         with results.open("a") as f:
             f.write(json.dumps(record) + "\n")
