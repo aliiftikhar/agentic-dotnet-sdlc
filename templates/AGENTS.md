@@ -23,6 +23,7 @@ Every change, of any size, goes through OpenSpec. Claude Code invokes the steps 
 - Stop after propose and wait for the repo owner to approve before applying.
 - After apply, start the `verifier` agent (`.claude/agents/verifier.md`, `.codex/agents/verifier.toml`; instructions in `.agents/agents/verifier.md`) and give it only the change name, not a summary of the work. If the verdict is `FAIL`, fix the gaps and start it again until it passes. Only the verifier writes `verification.md`. List any manual checks it reports in the PR.
 - Then run the `policy-review` skill on the change and the diff, then archive the change on the same branch as the code.
+- After archive, run `scripts/cost-report.sh <change-name>`, commit the `cost.md` it writes, and paste its table into the PR's **Cost** section (see "Cost report" below).
 - Commit the artifacts with the code and link the archived change in the PR. `scripts/spec-check.sh` must pass.
 - **no-spec:** only when the repo owner says a change is no-spec, skip OpenSpec for it and open the PR with `gh pr create --label no-spec`. Never add the label because the check failed. The other checks still apply.
 
@@ -36,7 +37,7 @@ A change to UI files (`.razor` or `.css` in `<SharedUiProject>` or `<WebProject>
 3. Signed-in screenshots use the session the repo owner saved with `--login` (`.auth/ui-user.json`, gitignored). Never run `--login`, sign in, or type credentials. If the session is missing or the screenshots show the guest view, ask the owner to run `--login`.
 4. If no screenshot can show the change (e.g. only after an interaction), write `screenshots.md` with `Screenshots: none` and a `Reason:` line; the verifier lists it as a manual check.
 
-`scripts/spec-check.sh` fails if a UI change has no `mockups.md` committed before the first UI code commit, no `screenshots.md`, or if UI files changed after the screenshots were taken. The verifier compares the screenshots with the mock-ups. Embed both in the PR's Screenshots section.
+`scripts/spec-check.sh` fails if a UI change has no `mockups.md` committed before the first UI code commit, no `screenshots.md`, or if UI files changed after the screenshots were taken. The verifier compares the screenshots with the mock-ups. Embed both in the PR's Screenshots section, linked by commit SHA (`blob/<sha>/...?raw=true`, with `git rev-parse HEAD` once the images are committed), never by branch name: the branch is deleted after merge, and branch links break.
 
 ### Bug fixes
 
@@ -133,6 +134,15 @@ scripts/eval-run.sh --agent claude --plan-model <model> --build-model <model> --
 - Defaults (model per agent, effort `medium`) are set at the top of `scripts/eval_run.py`. `--plan-model`, `--build-model` and `--verify-model` set one step's model (the runner sets the verifier's model in the snapshot only). Compare runs only when the step models and effort all match. Results go to `evals/results/<date>-<agent>-<config>-<effort>.jsonl` (committed; `<config>` is the model, or `<plan>-<build>-<verify>`); the summary compares the run with the previous one with the same configuration.
 - A usage limit or an unreachable API stops the run (exit 75) without recording that task; rerun with the printed `--run-id` to continue. Never delete result lines by hand.
 - Never edit `evals/tasks/` or results to make a run pass, and never read `evals/` while working on a normal change. If a task no longer fits the code, fix or replace it in its own change.
+
+### Cost report
+
+`scripts/cost-report.sh <change-name>` works out what a change cost from the local Claude Code and Codex session logs: tokens and an estimated cost per step (Plan, Build, Verify, Policy review, Archive, PR and review) and model, with the totals. It writes `cost.md` in the change folder (active or archived) and prints the same table.
+
+- Run it on the change's branch after archive, commit `cost.md`, and paste the table into the PR's Cost section. After review fixes, run it again, commit, and update the PR with `gh pr edit`.
+- It counts work on the change's branch, plus OpenSpec steps that name the change on `main` (such as propose before the branch exists). Work driven from a session started in another folder isn't found; say so in the PR if that applies.
+- Costs are API-equivalent estimates from `scripts/model-prices.json`, not a subscription bill. A model with no price there shows its tokens and "no price"; add its published rates to price it. The report reads only models, token counts, times, branches and step markers, never conversation text.
+- Tests: `python3 -m unittest discover scripts/tests`.
 
 ## Git Workflow
 

@@ -11,7 +11,7 @@ How a change moves through this kit, one column per stage. Every stage has the s
 
 ![Agentic SDLC map: six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by, checks and gates for each](sdlc-map.svg)
 
-Everything on the map is in the kit as of v2.7. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
+Everything on the map is in the kit as of v2.8. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
 
 ## Escape hatches
 
@@ -42,3 +42,4 @@ python3 tools/render-sdlc-map.py
 | v1 | Git hooks, Stop hook, architecture tests, mutation check, CI |
 | v2 | Plan stage (OpenSpec), skills, policy review, spec check, Deploy section in the PR |
 | v2.5 | Verifier and the Check stage's verdict, failing-test-first bug fixes, deny rules, protected paths, format check, UI mock-ups and screenshots |
+| v2.8 | PR and review: the cost report (`cost.md`, tokens and estimated cost per step and model), fed by the local agent logs |
