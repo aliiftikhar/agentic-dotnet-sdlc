@@ -23,7 +23,7 @@ Closes #
 - [ ] Integration tests run, if affected
 
 ## Screenshots
-<!-- Required if UI files changed (UI_FILES in scripts/spec-check.sh): embed the images listed in the change's mockups.md and screenshots.md side by side, e.g. ![Orders, desktop](https://github.com/<owner>/<repo>/blob/<branch>/openspec/changes/archive/<date>-<name>/screenshots/<file>.png?raw=true) -->
+<!-- Required if UI files changed (UI_FILES in scripts/spec-check.sh): embed the images listed in the change's mockups.md and screenshots.md side by side, linked by commit SHA (`git rev-parse HEAD` once the images are committed), not by branch name: the branch is deleted after merge and branch links break. E.g. ![Orders, desktop](https://github.com/<owner>/<repo>/blob/<commit-sha>/openspec/changes/archive/<date>-<name>/screenshots/<file>.png?raw=true) -->
 - [ ] Not applicable (no UI change)
 - [ ] Mock-up drawn before the code / Mock-up: none, because: 
 
@@ -35,6 +35,9 @@ Closes #
 <!-- Required if mutation-tested folders changed: run scripts/mutation-check.sh and paste its last line -->
 - [ ] Not applicable (no changes in mutation-tested folders)
 - [ ] `scripts/mutation-check.sh` passed: 
+
+## Cost
+<!-- Paste the table from `scripts/cost-report.sh <change-name>` (also in the change's cost.md). Rerun and update after review fixes. -->
 
 ## Protected paths
 <!-- .github/, .githooks/, .claude/settings.json, .claude/hooks/, .claude/agents/, .codex/, .agents/agents/, scripts/, <ApiProject>/Migrations/ -->

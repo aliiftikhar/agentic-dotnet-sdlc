@@ -1,7 +1,7 @@
 {
   "title": "Agentic SDLC map",
-  "subtitle": "How a change moves through the kit, as of v2.7. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label; the green loop tests the harness itself.",
-  "next_release": "v2.7",
+  "subtitle": "How a change moves through the kit, as of v2.8. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label; the green loop tests the harness itself.",
+  "next_release": "v2.8",
   "rows": ["Who", "Produces", "Rules", "Fed by", "Checks", "Gates"],
   "stages": [
     {
@@ -43,9 +43,9 @@
     {
       "name": "5 · PR and review",
       "Who": ["Agent opens the PR", "CI", "AI reviewer (Codex)"],
-      "Produces": ["PR from the template: spec, verdict, mutation result, migration?, Deploy order"],
+      "Produces": ["PR from the template: spec, verdict, mutation result, migration?, Deploy order", "cost.md: tokens and estimated cost per step and model (scripts/cost-report.sh)"],
       "Rules": ["Project AGENTS.md: Code Review Rules", "AGENTS.md: Review guidelines"],
-      "Fed by": ["The diff", "The archived change"],
+      "Fed by": ["The diff", "The archived change", "Local Claude Code and Codex session logs (usage only)"],
       "Checks": ["Mutation testing (0 survivors)", "CI: build, tests, spec check", "CI: format, protected paths", "AI code review (Codex)"],
       "Gates": ["Before gh pr create: spec check and mutation check must pass"]
     },

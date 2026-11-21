@@ -83,12 +83,21 @@ See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does t
 | `templates/scripts/eval-configs.sh` | Runs several plan/build/verify configurations in turn and waits out usage limits |
 | `docs/model-per-step.md` | How to set a model per step, how to measure your own, and the measured results: Sonnet for every step won |
 
+### v2.8: what each change cost
+
+| Path | What it is |
+|------|------------|
+| `templates/scripts/cost-report.sh`, `templates/scripts/cost_report.py`, `templates/scripts/model-prices.json` | **Cost report:** tokens and estimated cost per step (plan, build, verify, policy review, archive, PR and review) and model for one change, from the local Claude Code and Codex logs; writes `cost.md` and the PR's Cost table |
+| `templates/scripts/tests/test_cost_report.py` | Tests for it, with made-up logs |
+| `templates/AGENTS.md` ("Cost report"), `templates/.github/pull_request_template.md` | Run it after archive and paste the table into the new Cost section; PR screenshots are now linked by commit SHA, so they keep working after the branch is deleted |
+| `docs/cost-report.md` | How it works, what it can't see, setup, and lessons from building it |
+
 ## Using it today
 
 1. Copy `templates/` into the root of your repository (put `tests/` files into your unit test project).
 2. Replace the `<placeholders>` with your project names and commands, and **run every build, test and check** to make sure it works.
 3. Copy `project-AGENTS.md` into each project folder as `AGENTS.md`, with a `CLAUDE.md` next to it.
-4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`), harness evals (`docs/evals.md`) and models per step (`docs/model-per-step.md`).
+4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`), harness evals (`docs/evals.md`), models per step (`docs/model-per-step.md`) and the cost report (`docs/cost-report.md`).
 5. Put the setup itself through the loop as your first PR.
 
 ## Roadmap
