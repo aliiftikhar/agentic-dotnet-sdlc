@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" font-family="-apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#57606a"/></marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8250df"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker>
+  </defs>
+  <rect width="1600" height="900" fill="#ffffff"/>
+
+  <text x="800" y="52" text-anchor="middle" font-size="34" font-weight="700" fill="#1f2328">Agentic SDLC, at a glance</text>
+  <text x="800" y="86" text-anchor="middle" font-size="18" fill="#57606a">Agents do the work. Checks enforce the rules. Humans make the calls.</text>
+
+  <!-- Two ways in -->
+  <rect x="20" y="112" width="770" height="96" rx="14" fill="#ddf4ff" stroke="#0969da" stroke-width="2"/>
+  <text x="44" y="146" font-size="21" font-weight="700" fill="#0969da">On your machine</text>
+  <text x="44" y="176" font-size="16" fill="#1f2328">A developer drives the coding agent step by step:</text>
+  <text x="44" y="198" font-size="16" fill="#1f2328">plan, approve, build, check, open the PR.</text>
+  <rect x="810" y="112" width="770" height="96" rx="14" fill="#fff1e5" stroke="#bc4c00" stroke-width="2"/>
+  <text x="834" y="146" font-size="21" font-weight="700" fill="#bc4c00">From a label</text>
+  <text x="834" y="176" font-size="16" fill="#1f2328">Add agent:plan to an issue. Agents run in GitHub Actions:</text>
+  <text x="834" y="198" font-size="16" fill="#1f2328">plan PR to review, build, PR into main, fix runs.</text>
+  <path d="M405,208 L405,236" fill="none" stroke="#0969da" stroke-width="2.5" />
+  <path d="M1195,208 L1195,236" fill="none" stroke="#bc4c00" stroke-width="2.5" />
+  <text x="800" y="232" text-anchor="middle" font-size="15" font-style="italic" fill="#57606a">same six stages, same rules, same checks</text>
+
+  <path d="M20,250 L20,242 L1580,242 L1580,250" fill="none" stroke="#57606a" stroke-width="2"/>
+  <!-- Stage chevrons -->
+  <g font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle">
+    <polygon points="20,256 248,256 264,286 248,316 20,316" fill="#24292f"/>
+    <text x="138" y="293">1 · Request</text>
+    <polygon points="284,256 512,256 528,286 512,316 284,316 300,286" fill="#24292f"/>
+    <text x="406" y="293">2 · Plan</text>
+    <polygon points="548,256 776,256 792,286 776,316 548,316 564,286" fill="#24292f"/>
+    <text x="670" y="293">3 · Build</text>
+    <polygon points="812,256 1040,256 1056,286 1040,316 812,316 828,286" fill="#24292f"/>
+    <text x="934" y="293">4 · Check</text>
+    <polygon points="1076,256 1304,256 1320,286 1304,316 1076,316 1092,286" fill="#24292f"/>
+    <text x="1198" y="293">5 · PR and review</text>
+    <polygon points="1340,256 1580,256 1580,316 1340,316 1356,286" fill="#24292f"/>
+    <text x="1462" y="293">6 · Merge</text>
+  </g>
+
+  <!-- Stage bodies -->
+  <g font-size="16" fill="#1f2328">
+    <rect x="20" y="326" width="244" height="248" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <rect x="284" y="326" width="244" height="248" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <rect x="548" y="326" width="244" height="248" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <rect x="812" y="326" width="244" height="248" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <rect x="1076" y="326" width="244" height="248" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+    <rect x="1340" y="326" width="240" height="248" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+
+    <g font-size="13" font-weight="700" fill="#57606a" letter-spacing="1">
+      <text x="36" y="352">COMMITS</text><text x="300" y="352">COMMITS</text><text x="564" y="352">COMMITS</text>
+      <text x="828" y="352">COMMITS</text><text x="1092" y="352">COMMITS</text><text x="1356" y="352">COMMITS</text>
+      <text x="36" y="460">ENFORCED BY</text><text x="300" y="460">ENFORCED BY</text><text x="564" y="460">ENFORCED BY</text>
+      <text x="828" y="460">ENFORCED BY</text><text x="1092" y="460">ENFORCED BY</text><text x="1356" y="460">ENFORCED BY</text>
+    </g>
+
+    <text x="36" y="376">Issue with acceptance</text><text x="36" y="398">criteria</text>
+    <text x="36" y="484">The owner decides</text><text x="36" y="506">what gets built</text>
+
+    <text x="300" y="376">Spec, design and tasks</text><text x="300" y="398">UI mock-up before code</text>
+    <text x="300" y="484">Strict spec validation</text><text x="300" y="506">Agent stops after the plan</text>
+
+    <text x="564" y="376">Code and tests</text><text x="564" y="398">Bugs: failing test first,</text><text x="564" y="420">then locked</text>
+    <text x="564" y="484">Hooks: build, tests,</text><text x="564" y="506">format, architecture</text><text x="564" y="528">No commits to main</text>
+
+    <text x="828" y="376">Verifier verdict</text><text x="828" y="398">Security and data review</text><text x="828" y="420">UI screenshots</text>
+    <text x="828" y="484">A second agent with fresh</text><text x="828" y="506">context checks the spec</text><text x="828" y="528">Plan must match the diff</text>
+
+    <text x="1092" y="376">PR with the evidence</text><text x="1092" y="398">Cost of the change</text>
+    <text x="1092" y="484">Mutation: 0 survivors</text><text x="1092" y="506">CI and AI code review</text><text x="1092" y="528">(Codex reviews Claude)</text>
+
+    <text x="1356" y="376">Merge to main</text><text x="1356" y="398">Deploy order</text>
+    <text x="1356" y="484">Agents can't merge</text><text x="1356" y="506">or deploy</text>
+  </g>
+
+  <!-- Human gates -->
+  <g font-size="15" font-weight="700" fill="#ffffff">
+    <rect x="300" y="538" width="212" height="28" rx="14" fill="#1a7f37"/>
+    <text x="406" y="557" text-anchor="middle">HUMAN: approves the plan</text>
+    <rect x="1356" y="538" width="208" height="28" rx="14" fill="#1a7f37"/>
+    <text x="1460" y="557" text-anchor="middle">HUMAN: merges</text>
+  </g>
+
+  <!-- Fix loop -->
+  <path d="M1198,574 L1198,628 L670,628 L670,580" fill="none" stroke="#8250df" stroke-width="2.5" marker-end="url(#ap)"/>
+  <path d="M934,574 L934,628" fill="none" stroke="#8250df" stroke-width="2.5"/>
+  <text x="934" y="654" text-anchor="middle" font-size="16" fill="#8250df">Failed verdict, review comment or AI finding: back to Build on the same branch, then checked again</text>
+
+  <!-- Harness evals -->
+  <rect x="20" y="690" width="1560" height="112" rx="14" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+  <text x="44" y="724" font-size="21" font-weight="700" fill="#1a7f37">The harness tests itself</text>
+  <text x="44" y="754" font-size="16" fill="#1f2328">When the rules, skills, hooks or checks change: replay real tasks from the repo through all six stages in a throwaway copy,</text>
+  <text x="44" y="778" font-size="16" fill="#1f2328">score them on six checks, compare with the last run, keep or revert the change.</text>
+
+  <text x="800" y="846" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2328">Every stage commits an artifact to git: the next stage reads it, and together they are the audit trail.</text>
+  <text x="800" y="878" text-anchor="middle" font-size="15" fill="#57606a">github.com/aliiftikhar/agentic-dotnet-sdlc</text>
+</svg>

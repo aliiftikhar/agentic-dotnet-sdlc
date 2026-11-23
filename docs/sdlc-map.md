@@ -2,6 +2,8 @@
 
 How a change moves through this kit, one column per stage.
 
+For a one-picture overview, see [sdlc-at-a-glance.svg](sdlc-at-a-glance.svg). It's drawn by hand, so update it when a stage, a human gate or a headline check changes here.
+
 **Two ways to run it** (the two lanes at the top):
 
 - **On your machine** (blue): you pick an issue and drive Claude Code or Codex in your own session, step by step: propose, approve, apply, verify, archive, PR. This is how the kit has always worked.
@@ -53,3 +55,4 @@ python3 tools/render-sdlc-map.py
 | v2.5 | Verifier and the Check stage's verdict, failing-test-first bug fixes, deny rules, protected paths, format check, UI mock-ups and screenshots |
 | v2.8 | PR and review: the cost report (`cost.md`, tokens and estimated cost per step and model), fed by the local agent logs |
 | v3 | Two ways to run the flow: on your machine, or from an `agent:plan` label (plan PR, build run, fix runs in GitHub Actions); agent-only points in orange; the threat model in Check's rules; new packages gated by `protected-ok` |
+| v3.1 | A simple overview, `sdlc-at-a-glance.svg`, in the README above the full map |

@@ -14,7 +14,11 @@ Two ways to run it: drive the agent on your machine, step by step; or label the 
 When the harness itself changes: you run the harness evals → the same real tasks go through the loop above → compare with the last run → keep or revert
 ```
 
-See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does the work, what it produces, which rules and files drive it, and what enforces it.
+The short version:
+
+![Agentic SDLC at a glance: two ways in (on your machine, or from an agent:plan label) feed six stages, each with what it commits and what enforces it; humans approve the plan and merge; failed checks and review findings loop back to Build; harness changes are replayed and scored](docs/sdlc-at-a-glance.svg)
+
+See the **[SDLC map](docs/sdlc-map.md)** for every stage in detail: who does the work, what it produces, which rules and files drive it, and what enforces it.
 
 [![Agentic SDLC map](docs/sdlc-map.svg)](docs/sdlc-map.md)
 
