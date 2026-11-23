@@ -21,6 +21,7 @@ What fixed it for us: **recreating the Codex cloud environment for the repositor
 - Your ChatGPT account is linked to your GitHub account (ChatGPT → Settings → Connectors → GitHub). This is separate from the Codex app being installed on the repo.
 - The Codex GitHub app has access to the repository and has no pending permissions request.
 - The review settings actually saved (reload the page after changing them).
+- **The PR or the request comes from a bot.** Codex acts only for accounts connected to Codex: it doesn't review PRs opened by a GitHub App (such as the Claude app) on its own, and it answers `@codex review` from a bot with "create a Codex account". Post the request from your own account; agent runs do this with `CODEX_REVIEW_TOKEN` (see [agent-runs.md](agent-runs.md)).
 
 ## Testing it
 

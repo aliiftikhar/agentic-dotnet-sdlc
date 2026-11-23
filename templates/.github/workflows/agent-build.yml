@@ -1,0 +1,227 @@
+name: Agent build
+
+# Approved plan -> PR into main, and review fixes. See "Agent runs from issues" in AGENTS.md and
+# openspec/specs/agent-runs/spec.md.
+#   build: an agent user merges a plan PR (agent/<issue>-<slug>-plan -> agent/<issue>-<slug>). The build
+#          branch is updated from main, then Claude applies, verifies, reviews, archives and opens the PR
+#          into main.
+#   fix:   a reviewer with write access comments on, or reviews, an open agent PR into main; or Codex
+#          reviews it with findings (at most AGENT_MAX_CODEX_ROUNDS Codex rounds per PR, default 3).
+# Who may start what is decided by scripts/agent_gate.py, always run from main.
+
+on:
+  pull_request:
+    types: [closed]
+  issue_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+      kind: ${{ steps.gate.outputs.kind }}
+      issue: ${{ steps.gate.outputs.issue }}
+      change: ${{ steps.gate.outputs.change }}
+      build_branch: ${{ steps.gate.outputs.build_branch }}
+      pr: ${{ steps.gate.outputs.pr }}
+      trigger: ${{ steps.gate.outputs.trigger }}
+      codex: ${{ steps.gate.outputs.codex }}
+    # Cheap first filter; the gate script does the real checks.
+    if: >-
+      (github.event_name == 'pull_request' && github.event.pull_request.merged && endsWith(github.event.pull_request.head.ref, '-plan') && startsWith(github.event.pull_request.base.ref, 'agent/')) ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && github.event.comment.user.type != 'Bot') ||
+      (github.event_name == 'pull_request_review' && startsWith(github.event.pull_request.head.ref, 'agent/') && github.event.pull_request.base.ref == 'main' && github.event.review.user.login != 'claude[bot]')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          sparse-checkout: scripts/agent_gate.py
+          sparse-checkout-cone-mode: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          AGENT_USERS: ${{ vars.AGENT_USERS }}
+          AGENT_MAX_CODEX_ROUNDS: ${{ vars.AGENT_MAX_CODEX_ROUNDS }}
+        run: python3 scripts/agent_gate.py build
+      - name: Tell the user why nothing runs
+        if: steps.gate.outputs.notice != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTICE: ${{ steps.gate.outputs.notice }}
+        run: gh issue comment "${{ steps.gate.outputs.notice_on }}" --repo "$GITHUB_REPOSITORY" --body "$NOTICE"
+
+  agent:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    concurrency:
+      group: agent-${{ needs.gate.outputs.issue }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    env:
+      KIND: ${{ needs.gate.outputs.kind }}
+      ISSUE: ${{ needs.gate.outputs.issue }}
+      CHANGE: ${{ needs.gate.outputs.change }}
+      BUILD_BRANCH: ${{ needs.gate.outputs.build_branch }}
+      PR: ${{ needs.gate.outputs.pr }}
+      TRIGGER: ${{ needs.gate.outputs.trigger }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.build_branch }}
+          fetch-depth: 0
+
+      - name: Record the branch tip
+        id: start
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Update the build branch from main
+        id: merge
+        if: env.KIND == 'build'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git merge --no-edit origin/main; then
+            git push origin "$BUILD_BRANCH"
+          else
+            git merge --abort
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+            gh issue comment "$PR" --repo "$GITHUB_REPOSITORY" --body \
+              "The build didn't start: merging \`main\` into \`$BUILD_BRANCH\` conflicts. Resolve the conflict on \`$BUILD_BRANCH\` and push; a fix run can't help here because there's no PR into main yet. Then rerun this job ($RUN_URL)."
+          fi
+
+      - name: Count the Codex round
+        if: needs.gate.outputs.codex == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "$PR" --repo "$GITHUB_REPOSITORY" --body \
+            "<!-- agent-codex-round --> The agent is working through Codex's review ($RUN_URL)."
+
+      - uses: actions/setup-dotnet@v4
+        if: steps.merge.outputs.conflict != 'true'
+        with:
+          global-json-file: global.json
+
+      - name: Install the OpenSpec CLI, lsof and Chromium for screenshots
+        if: steps.merge.outputs.conflict != 'true'
+        run: |
+          npm install -g @fission-ai/openspec@1.16.0
+          command -v lsof || (sudo apt-get update && sudo apt-get install -y lsof)
+          npx --yes playwright@1.64.1 install --with-deps chromium
+
+      - name: Write the prompt
+        id: prompt
+        if: steps.merge.outputs.conflict != 'true'
+        env:
+          STEP_FILE: ${{ needs.gate.outputs.kind }}
+          STEP: ${{ needs.gate.outputs.kind == 'build' && 'Build' || 'PR and review' }}
+          PLAN_BRANCH: ${{ needs.gate.outputs.build_branch }}-plan
+        run: |
+          python3 - <<'EOF'
+          import os
+          text = open(".github/agent-prompts/frame.md").read() + open(f".github/agent-prompts/{os.environ['STEP_FILE']}.md").read()
+          values = {"REPO": os.environ["GITHUB_REPOSITORY"], **{k: os.environ.get(k, "") for k in
+                    ("ISSUE", "CHANGE", "BUILD_BRANCH", "PLAN_BRANCH", "PR", "TRIGGER", "STEP", "RUN_URL")}}
+          for key, value in values.items():
+              text = text.replace("{{" + key + "}}", value)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("text<<PROMPT_END\n" + text + "\nPROMPT_END\n")
+          EOF
+
+      - name: Claude
+        id: claude
+        if: steps.merge.outputs.conflict != 'true'
+        uses: anthropics/claude-code-action@v1
+        env:
+          CLAUDE_BRANCH: ${{ env.BUILD_BRANCH }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: ${{ steps.prompt.outputs.text }}
+          base_branch: main
+          # Codex's review starts fix runs; the gate checks it's Codex, with findings, within the cap.
+          allowed_bots: chatgpt-codex-connector
+          # The PR is opened by claude[bot]; without this the action denies test and build commands
+          # on it. The gate already limits who can start a run.
+          restrict_untrusted_prs: "false"
+          # The action's CI tools (check status, run details, job logs), so a fix run can read why a
+          # check failed. They use this job's token, which has actions: read.
+          additional_permissions: |
+            actions: read
+          claude_args: --model claude-sonnet-5-5 --max-turns 200 --permission-mode auto
+
+      - name: Ask Codex to review, as the owner
+        # Codex acts only for accounts connected to it, so this uses the owner's fine-grained token
+        # (CODEX_REVIEW_TOKEN: this repo, pull requests write). Only this step gets the token, and it
+        # only posts "@codex review". Build: on the PR into main. Codex fix run: only if it pushed.
+        if: success() && steps.merge.outputs.conflict != 'true' && (env.KIND == 'build' || needs.gate.outputs.codex == 'true')
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
+          START_SHA: ${{ steps.start.outputs.sha }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::CODEX_REVIEW_TOKEN isn't set, so Codex wasn't asked to review."
+            exit 0
+          fi
+          target=""
+          if [ "$KIND" = build ]; then
+            target=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BUILD_BRANCH" --base main --json number --jq '.[0].number // empty') || target=""
+          else
+            tip=$(gh api "repos/$GITHUB_REPOSITORY/branches/$BUILD_BRANCH" --jq .commit.sha) || tip=""
+            if [ -n "$tip" ] && [ "$tip" != "$START_SHA" ]; then target="$PR"; fi
+          fi
+          if [ -z "$target" ]; then
+            echo "Nothing new for Codex to review."
+            exit 0
+          fi
+          gh pr comment "$target" --repo "$GITHUB_REPOSITORY" --body "@codex review" ||
+            echo "::warning::Couldn't post the Codex review request with CODEX_REVIEW_TOKEN (expired, or missing the pull requests permission?)."
+
+      - name: Comment when the run stopped
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A build run comments on its PR into main if it opened one, else on the issue.
+          target="$PR"
+          if [ "$KIND" = build ]; then
+            target=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BUILD_BRANCH" --base main --json number --jq '.[0].number')
+            target="${target:-$ISSUE}"
+          fi
+          gh issue comment "$target" --repo "$GITHUB_REPOSITORY" --body \
+            "The agent's $KIND run stopped before finishing ($RUN_URL). It may have hit a usage limit or a timeout. Anything it pushed is on \`$BUILD_BRANCH\`. Rerun the job from that page, or comment again."
+
+      - name: Cost fallback
+        if: always() && steps.claude.outputs.execution_file != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXEC: ${{ steps.claude.outputs.execution_file }}
+        run: |
+          git fetch -q origin "$BUILD_BRANCH" || exit 0
+          if git grep -q "\"run\": \"$GITHUB_RUN_ID\"" "origin/$BUILD_BRANCH" -- 'openspec/changes/*ci-usage.jsonl'; then exit 0; fi
+          cost=$(jq -r '[.[] | select(.type == "result") | .total_cost_usd] | last // empty' "$EXEC" 2>/dev/null)
+          [ -n "$cost" ] || exit 0
+          target=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BUILD_BRANCH" --base main --json number --jq '.[0].number')
+          gh issue comment "${target:-${PR:-$ISSUE}}" --repo "$GITHUB_REPOSITORY" --body \
+            "This agent run wasn't recorded in \`ci-usage.jsonl\`. Its cost from the action: \$$(printf '%.2f' "$cost") (API-equivalent estimate, no token counts)."

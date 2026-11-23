@@ -9,6 +9,8 @@ Everything here has been used on a real production .NET SaaS before being added.
 ```
 Request → agent proposes a spec (and a UI mock-up) → you approve → agent builds on a branch → checks (hooks, tests, mutation, format, screenshots) → a second agent verifies against the spec → PR → CI → AI review → you merge
 
+Two ways to run it: drive the agent on your machine, step by step; or label the issue agent:plan → the agent opens a plan PR → you merge it to approve → it builds and opens the PR → review comments start fix runs → you merge
+
 When the harness itself changes: you run the harness evals → the same real tasks go through the loop above → compare with the last run → keep or revert
 ```
 
@@ -92,17 +94,29 @@ See the **[SDLC map](docs/sdlc-map.md)** for every stage at a glance: who does t
 | `templates/AGENTS.md` ("Cost report"), `templates/.github/pull_request_template.md` | Run it after archive and paste the table into the new Cost section; PR screenshots are now linked by commit SHA, so they keep working after the branch is deleted |
 | `docs/cost-report.md` | How it works, what it can't see, setup, and lessons from building it |
 
+### v3: agent runs from issues
+
+| Path | What it is |
+|------|------------|
+| `templates/.github/workflows/agent-plan.yml`, `templates/.github/workflows/agent-build.yml` | **Label an issue `agent:plan`** and Claude Code runs the flow in GitHub Actions: a plan PR you review and merge, then the build, the PR into `main`, and fix runs from review comments and Codex findings. Working on your machine is unchanged |
+| `templates/.github/agent-prompts/` | What each run is told: shared rules, plan, revise, build, fix (with triage rules for Codex findings) |
+| `templates/scripts/agent_gate.py`, `templates/scripts/tests/test_agent_gate.py` | Who can start what, by GitHub login: agent users label and approve, write access starts fixes, Codex only with findings and within a round cap |
+| `templates/scripts/cost_report.py` | CI runs record their own usage (`ci-usage.jsonl`), shown as "Claude Code (CI)" rows |
+| `templates/scripts/protected-paths.sh` | New or changed NuGet packages need the owner's `protected-ok` |
+| `templates/docs/threat-model.md`, `templates/.agents/skills/policy-review/` | A threat model for agents in your repo; the policy review checks harness changes against it |
+| `docs/agent-runs.md` | How a change goes through, setup (secrets, Claude app, label, Codex token), why it's shaped this way, measured costs and lessons learned |
+
 ## Using it today
 
 1. Copy `templates/` into the root of your repository (put `tests/` files into your unit test project).
 2. Replace the `<placeholders>` with your project names and commands, and **run every build, test and check** to make sure it works.
 3. Copy `project-AGENTS.md` into each project folder as `AGENTS.md`, with a `CLAUDE.md` next to it.
-4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`), harness evals (`docs/evals.md`), models per step (`docs/model-per-step.md`) and the cost report (`docs/cost-report.md`).
+4. Set up the AI reviewer (`docs/codex-review.md`), the checks (`docs/enforced-checks.md`), OpenSpec (`docs/spec-driven.md`), verification and guards (`docs/verification.md`), harness evals (`docs/evals.md`), models per step (`docs/model-per-step.md`), the cost report (`docs/cost-report.md`) and, if you want agents to work from labelled issues, agent runs (`docs/agent-runs.md`).
 5. Put the setup itself through the loop as your first PR.
 
 ## Roadmap
 
-- **v3:** agents picking up issues and opening draft PRs
+- Auto-merge for low-risk PRs, once written risk rules and a track record exist
 - Install with an agent skill instead of copying files, a reusable CI workflow, and a NuGet package for the architecture checks
 
 ## License

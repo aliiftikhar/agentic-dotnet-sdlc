@@ -1,53 +1,75 @@
 {
   "title": "Agentic SDLC map",
-  "subtitle": "How a change moves through the kit, as of v2.8. The purple arrow goes back to Build; dashed arrows skip a stage with the owner's no-spec label; the green loop tests the harness itself.",
-  "next_release": "v2.8",
+  "subtitle": "How a change moves through the kit, as of v3. Top: the two ways to start a change. Grid: the six stages both ways go through. Orange points apply to agent runs only; the purple arrow goes back to Build; dashed arrows skip a stage with no-spec; the green loop tests the harness itself.",
+  "next_release": "v3",
+  "paths": {
+    "title": "Two ways to run the same flow",
+    "note": "Both ways go through the same six stages below: the same rules, checks and gates",
+    "lanes": [
+      {"name": "On your machine", "sub": "you drive the agent", "style": "local", "steps": [
+        {"text": "You pick an issue, or write a request"},
+        {"text": "You run /opsx:propose and approve the plan in your session"},
+        {"text": "Agent builds on a feature branch (/opsx:apply)"},
+        {"text": "Verifier, policy review and archive, in your session"},
+        {"text": "Agent opens the PR; CI and Codex review it", "loop": "you ask for fixes in your session"},
+        {"text": "You merge"}
+      ]},
+      {"name": "From a label", "sub": "agents run in GitHub Actions", "style": "agent", "steps": [
+        {"text": "You add the agent:plan label to the issue"},
+        {"text": "Agent opens a plan PR for you to review; you merge it to approve", "loop": "your comments start revision runs"},
+        {"text": "Build run on the issue's agent/ branch, updated from main"},
+        {"text": "The same checks, run by the agent in CI"},
+        {"text": "PR into main; the workflow asks Codex to review from your account", "loop": "review comments and Codex findings start fix runs"},
+        {"text": "You merge"}
+      ]}
+    ]
+  },
   "rows": ["Who", "Produces", "Rules", "Fed by", "Checks", "Gates"],
   "stages": [
     {
       "name": "1 · Request",
       "Who": ["Owner"],
-      "Produces": ["Issue or plain request with acceptance criteria"],
+      "Produces": ["Issue or plain request with acceptance criteria", "@agent:plan label on the issue"],
       "Rules": ["AGENTS.md: every change goes through OpenSpec"],
       "Fed by": ["ISSUE_TEMPLATE/change-request.md"],
       "Checks": ["Owner reads the request"],
-      "Gates": ["Owner decides what gets built"]
+      "Gates": ["Owner decides what gets built", "@Only AGENT_USERS can label, on issues they opened (agent_gate.py)"]
     },
     {
       "name": "2 · Plan",
-      "Who": ["Agent proposes (/opsx:propose)", "Owner approves or asks for changes (/opsx:update)"],
+      "Who": ["Agent proposes (/opsx:propose)", "Owner approves or asks for changes (/opsx:update)", "@CI agent opens a plan PR into the build branch; owner comments, then merges it"],
       "Produces": ["openspec/changes/<name>/: proposal.md, specs/, design.md, tasks.md", "UI: mockups/ (desktop + phone)"],
       "Rules": ["openspec/config.yaml", "AGENTS.md: Specs and Workflows"],
       "Fed by": ["Living specs (openspec/specs/)", "Root and project AGENTS.md", "The code"],
       "Checks": ["openspec validate --strict", "Proposal flags personal data, auth, payments, AI providers", "UI mock-up rendered with the app's own CSS, no app running"],
-      "Gates": ["Agent stops after propose", "Owner approves the plan and the mock-up", "spec-check.sh: mock-up committed before UI code"]
+      "Gates": ["Agent stops after propose", "Owner approves the plan and the mock-up", "spec-check.sh: mock-up committed before UI code", "@Merging the plan PR is the approval that starts the build"]
     },
     {
       "name": "3 · Build",
-      "Who": ["Agent applies on a branch (/opsx:apply)"],
+      "Who": ["Agent applies on a branch (/opsx:apply)", "@Build run in GitHub Actions (Claude Code, Sonnet, auto mode)"],
       "Produces": ["Code and tests", "Ticked tasks.md", "Bug fix: failing test committed first, failing-test.md"],
       "Rules": ["AGENTS.md, project AGENTS.md", "Skills: create-usecase, model-change, handler-tests"],
       "Fed by": ["tasks.md and design.md", ".editorconfig"],
       "Checks": ["Build and unit tests (Stop hook)", "Architecture tests", "C# format check (Stop hook)", "Bug fix: test fails first, for the bug's reason"],
-      "Gates": ["Git hooks: no commits to main", "Failing test locked once committed", "Deny: merge, deploy, --no-verify", "Ask: edits to protected paths"]
+      "Gates": ["Git hooks: no commits to main", "Failing test locked once committed", "Deny: merge, deploy, --no-verify", "Ask: edits to protected paths", "@In CI, ask rules can't be approved, so protected-path edits are denied"]
     },
     {
       "name": "4 · Check",
       "Who": ["Verifier subagent (fresh context)", "Agent: policy-review skill, then archive (/opsx:archive)"],
       "Produces": ["verification.md with a verdict", "policy-review.md", "Spec merged into openspec/specs/", "screenshots/ and screenshots.md"],
-      "Rules": [".agents/agents/verifier.md", "skills/policy-review"],
+      "Rules": [".agents/agents/verifier.md", "skills/policy-review", "@docs/threat-model.md: the policy review checks harness changes against it"],
       "Fed by": ["Change name and diff only, never the builder's summary", "Saved test session (.auth/, owner signs in once)"],
       "Checks": ["Verifier: every scenario has a test or code, every task is done, design followed, nothing extra", "Policy review: security and personal data", "UI screenshots of changed pages, desktop and phone; verifier uses them as evidence"],
       "Gates": ["spec-check.sh: plan matches diff", "spec-check.sh: verdict passes", "spec-check.sh: test commit before the fix", "spec-check.sh: UI change has screenshots newer than the code"]
     },
     {
       "name": "5 · PR and review",
-      "Who": ["Agent opens the PR", "CI", "AI reviewer (Codex)"],
-      "Produces": ["PR from the template: spec, verdict, mutation result, migration?, Deploy order", "cost.md: tokens and estimated cost per step and model (scripts/cost-report.sh)"],
-      "Rules": ["Project AGENTS.md: Code Review Rules", "AGENTS.md: Review guidelines"],
-      "Fed by": ["The diff", "The archived change", "Local Claude Code and Codex session logs (usage only)"],
-      "Checks": ["Mutation testing (0 survivors)", "CI: build, tests, spec check", "CI: format, protected paths", "AI code review (Codex)"],
-      "Gates": ["Before gh pr create: spec check and mutation check must pass"]
+      "Who": ["Agent opens the PR", "CI", "AI reviewer (Codex)", "@Fix runs from review comments and Codex findings"],
+      "Produces": ["PR from the template: spec, verdict, mutation result, migration?, Deploy order", "cost.md: tokens and estimated cost per step and model (scripts/cost-report.sh)", "@ci-usage.jsonl: each CI run records its own usage"],
+      "Rules": ["Project AGENTS.md: Code Review Rules", "AGENTS.md: Review guidelines", "@fix.md: Codex P0/P1 confirmed and fixed, P2 only real bugs, P3 not actioned"],
+      "Fed by": ["The diff", "The archived change", "Local Claude Code and Codex session logs (usage only)", "@CI logs, so a comment that a check failed is enough"],
+      "Checks": ["Mutation testing (0 survivors)", "CI: build, tests, spec check", "CI: format, protected paths", "AI code review (Codex)", "@Workflow asks Codex to review from the owner's account"],
+      "Gates": ["Before gh pr create: spec check and mutation check must pass", "@Only write access starts fix runs; Codex rounds capped (AGENT_MAX_CODEX_ROUNDS)"]
     },
     {
       "name": "6 · Merge and release",
@@ -56,7 +78,7 @@
       "Rules": ["Labels only the owner adds: no-spec, protected-ok"],
       "Fed by": ["PR checks and review comments", "Verifier's manual checks"],
       "Checks": ["Owner reads checks, review comments and the PR", "Verifier's manual checks", "Harness change: owner runs the smoke evals"],
-      "Gates": ["Only the owner merges", "pre-push hook: no pushes to main", "Deny rules: agents can't merge or deploy"]
+      "Gates": ["Only the owner merges", "pre-push hook: no pushes to main", "Deny rules: agents can't merge or deploy", "New or changed NuGet packages need protected-ok"]
     }
   ],
   "loops": [

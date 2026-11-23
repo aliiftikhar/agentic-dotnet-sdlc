@@ -1,6 +1,13 @@
 # The agentic SDLC map
 
-How a change moves through this kit, one column per stage. Every stage has the same six rows:
+How a change moves through this kit, one column per stage.
+
+**Two ways to run it** (the two lanes at the top):
+
+- **On your machine** (blue): you pick an issue and drive Claude Code or Codex in your own session, step by step: propose, approve, apply, verify, archive, PR. This is how the kit has always worked.
+- **From a label** (orange): you add `agent:plan` to an issue and Claude Code runs the same steps in GitHub Actions. It opens a plan PR you review and merge to approve, then builds and opens the PR into `main`; your review comments and Codex's findings start fix runs. You only review and merge. See [agent-runs.md](agent-runs.md).
+
+Both lanes go through the same six stages below, with the same rules, checks and gates. Orange points in the grid apply to agent runs only. Every stage has the same six rows:
 
 - **Who** does the work.
 - **Produces:** the files or artifacts that come out.
@@ -9,9 +16,9 @@ How a change moves through this kit, one column per stage. Every stage has the s
 - **Checks:** what is actually verified at this stage, by tools or agents: tests, mutation testing, the verifier, policy review, AI code review.
 - **Gates:** what stops a change from moving on: approvals, hooks, deny rules, scripts that must pass.
 
-![Agentic SDLC map: six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by, checks and gates for each](sdlc-map.svg)
+![Agentic SDLC map: two ways to run the flow (on your machine, or from an agent:plan label in GitHub Actions) above six stages (Request, Plan, Build, Check, PR and review, Merge and release) with who, produces, rules, fed by, checks and gates for each](sdlc-map.svg)
 
-Everything on the map is in the kit as of v2.8. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
+Everything on the map is in the kit as of v3. The green box under the grid is the harness loop: when the harness itself changes, the owner runs the harness evals ([docs/evals.md](evals.md)) and the results shape the rules every stage follows. When the source project gets ahead of the kit again, amber lines mark what comes in the next release and grey dashed lines what is planned but not built yet.
 
 ## Escape hatches
 
@@ -28,9 +35,11 @@ python3 tools/render-sdlc-map.py
 ```
 
 - `loops` are drawn as arrows above the stage headers (e.g. review comments back to Build), `skips` as dashed arrows below the grid (e.g. `no-spec`). Each has `from`, `to` (stage numbers) and a short `label`. `harness_loop` is drawn as a box under the grid, with an arrow in from its `from` stage (`label_in`) and one back up into the Rules row (`label_out`); its `title` and `steps` are the box's text.
+- `paths` is drawn above the stages: one lane per way of working (`style` `local` or `agent`), one box per stage in `steps`, with arrows along the lane. A step's optional `loop` is drawn as a dashed box inside it (e.g. comments starting revision runs). `note` is the line under the lanes.
 - Each entry in a cell is one point, drawn as a bullet; long points wrap under their bullet, so don't split a point across entries.
 - Start a point with `+` to mark it as arriving in the next release (drawn in amber).
 - Start a point with `~` to mark it as planned (grey, dashed). Change it to `+` once it works on the source project.
+- Start a point with `@` to mark it as applying to agent runs only (orange, like the agent lane).
 - When a release ships, remove the `+` from its points and add a row to the changelog below.
 - Commit the JSON and the SVG together.
 
@@ -43,3 +52,4 @@ python3 tools/render-sdlc-map.py
 | v2 | Plan stage (OpenSpec), skills, policy review, spec check, Deploy section in the PR |
 | v2.5 | Verifier and the Check stage's verdict, failing-test-first bug fixes, deny rules, protected paths, format check, UI mock-ups and screenshots |
 | v2.8 | PR and review: the cost report (`cost.md`, tokens and estimated cost per step and model), fed by the local agent logs |
+| v3 | Two ways to run the flow: on your machine, or from an `agent:plan` label (plan PR, build run, fix runs in GitHub Actions); agent-only points in orange; the threat model in Check's rules; new packages gated by `protected-ok` |

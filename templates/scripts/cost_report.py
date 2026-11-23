@@ -28,6 +28,8 @@ MARKER_STEPS = {
     "apply": "Build", "apply-change": "Build",
     "archive": "Archive", "archive-change": "Archive",
 }
+CI_AGENT = "Claude Code (CI)"
+CI_USAGE = "ci-usage.jsonl"
 TRUNK = {None, "", "HEAD", "main", "master"}
 NAME_RE = re.compile(r"[a-z0-9][a-z0-9-]*")
 CLAUDE_COMMAND = re.compile(r"<command-name>/?([^<]+)</command-name>")
@@ -284,6 +286,8 @@ def marker_times(event_lists, change):
 
 def claude_sessions(claude_dir, repo):
     paths = []
+    if not claude_dir:
+        return []
     for project in claude_project_dirs(claude_dir, repo):
         paths.extend(sorted(glob.glob(os.path.join(project, "*.jsonl"))))
     return [(path, claude_responses(path)) for path in paths]
@@ -407,6 +411,8 @@ def codex_events(path, repo):
 
 def codex_sessions(codex_dir, repo):
     sessions = []
+    if not codex_dir:
+        return sessions
     for path in sorted(glob.glob(os.path.join(codex_dir, "**", "*.jsonl"), recursive=True)):
         events = codex_events(path, repo)
         if events is not None:
@@ -480,7 +486,7 @@ def current_branch():
     return out.stdout.strip()
 
 
-def build_report(change, branch, claude_dir, codex_dir, prices, repo=REPO, today=None, known=None):
+def build_report(change, branch, claude_dir, codex_dir, prices, repo=REPO, today=None, known=None, ci_usage=()):
     global KNOWN_CHANGES
     KNOWN_CHANGES = set(known) if known is not None else known_changes(repo)
     rows = defaultdict(zero)
@@ -503,10 +509,13 @@ def build_report(change, branch, claude_dir, codex_dir, prices, repo=REPO, today
     apply_at, archive_at = marker_times([e for _, e in claude] + [e for _, e, _ in codex], change)
     other = claude_rows(claude, change, branch, prices, add, apply_at, archive_at)
     codex_rows(codex, change, branch, prices, add, apply_at, archive_at)
+    for line in ci_usage:
+        add(line.get("step", "Other"), CI_AGENT, line.get("model"), {k: line.get(k, 0) or 0 for k in zero()},
+            line.get("cost"))
 
     order = {s: i for i, s in enumerate(STEP_ORDER)}
     lines = [f"# Cost: {change}", "",
-             f"Estimated from local agent session logs on {today or datetime.date.today().isoformat()}, "
+             f"Estimated from agent session logs (local, and CI runs recorded in `ci-usage.jsonl`) on {today or datetime.date.today().isoformat()}, "
              f"prices from `scripts/model-prices.json` ({prices.get('updated', 'undated')}). "
              "API-equivalent: what the same tokens would cost on the API, not a subscription bill.", "",
              "| Step | Agent | Model | Input | Cache write | Cache read | Output | Cost |",
@@ -532,6 +541,9 @@ def build_report(change, branch, claude_dir, codex_dir, prices, repo=REPO, today
     lines += ["", f"Total tokens: {total_tokens:,}. Total estimated cost: ${total_cost:,.2f}."]
     notes = ["Not measured: the Codex review on GitHub, GitHub Actions minutes, and work done from a session "
              "started in another folder."]
+    if ci_usage:
+        notes.append("Claude Code (CI) rows are recorded by each CI run just before its last push, so the run's "
+                     "final few turns (commit, push, replies) aren't counted.")
     if unpriced:
         notes.insert(0, "The total leaves out models with no price in `scripts/model-prices.json`: "
                      + ", ".join(sorted(unpriced)) + ".")
@@ -541,14 +553,101 @@ def build_report(change, branch, claude_dir, codex_dir, prices, repo=REPO, today
     return "\n".join(lines) + "\n", total_cost, total_tokens
 
 
+# ---------- CI runs ----------
+
+def record_ci(claude_dir, repo, prices, step, run_id):
+    """Per (step, model) usage of every Claude Code session on this runner for this checkout: one CI run.
+    Steps start at `step` and follow the OpenSpec step markers; verifier subagents count as Verify, other
+    subagents take the step of the call that started them."""
+    sums, costs, unpriced = defaultdict(zero), defaultdict(float), set()
+
+    def add(at, model, tokens):
+        if not any(tokens.values()):
+            return
+        key = (at, model or "unknown")
+        for k in tokens:
+            sums[key][k] += tokens[k]
+        c = cost_of(price_for(prices, model), tokens)
+        if c is None:
+            unpriced.add(key)
+        else:
+            costs[key] += c
+
+    for path, events in claude_sessions(claude_dir, repo):
+        now, spawned = step, {}
+        for ev in events:
+            if ev["kind"] == "marker":
+                now = ev["step"]
+            elif ev["kind"] == "spawn":
+                spawned[ev["id"]] = now
+            elif ev["kind"] == "response":
+                add(now, ev["model"], claude_usage(ev["usage"]))
+        todo = []
+        for sub in sorted(glob.glob(os.path.join(os.path.splitext(path)[0], "subagents", "*.jsonl"))):
+            meta_path = os.path.splitext(sub)[0] + ".meta.json"
+            meta = {}
+            if os.path.exists(meta_path):
+                with open(meta_path) as f:
+                    meta = json.load(f)
+            todo.append((meta, claude_responses(sub)))
+        while todo:
+            ready = [t for t in todo if t[0].get("toolUseId") in spawned] or todo[:1]
+            for meta, sub_events in ready:
+                todo.remove((meta, sub_events))
+                at = "Verify" if meta.get("agentType") == "verifier" else spawned.get(meta.get("toolUseId"), step)
+                for e in sub_events:
+                    if e["kind"] == "spawn":
+                        spawned[e["id"]] = at
+                    elif e["kind"] == "response":
+                        add(at, e["model"], claude_usage(e["usage"]))
+    order = {s: i for i, s in enumerate(STEP_ORDER)}
+    return [{"step": at, "agent": CI_AGENT, "model": model, **sums[(at, model)],
+             "cost": None if (at, model) in unpriced else round(costs[(at, model)], 6), "run": str(run_id)}
+            for at, model in sorted(sums, key=lambda k: (order.get(k[0], 99), k[1]))]
+
+
+def read_ci_usage(folder):
+    path = Path(folder) / CI_USAGE if folder else None
+    return list(read_jsonl(path)) if path and path.exists() else []
+
+
+def write_ci_usage(folder, lines, run_id):
+    """Replace this run's lines (a rerun of the same step) and keep every other run's."""
+    kept = [l for l in read_ci_usage(folder) if str(l.get("run")) != str(run_id)]
+    with open(Path(folder) / CI_USAGE, "w") as f:
+        for line in kept + lines:
+            f.write(json.dumps(line) + "\n")
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Token and cost report for an OpenSpec change, from agent session logs.")
     parser.add_argument("change", help="OpenSpec change name (active or archived)")
     parser.add_argument("--branch", help="the change's branch (default: the current branch)")
     parser.add_argument("--print", dest="print_only", action="store_true", help="print the table without writing cost.md")
-    parser.add_argument("--claude-dir", default=os.path.expanduser("~/.claude/projects"))
-    parser.add_argument("--codex-dir", default=os.path.expanduser("~/.codex/sessions"))
+    parser.add_argument("--record-ci", action="store_true",
+                        help="in a CI run: record this run's usage in the change's ci-usage.jsonl instead of reporting")
+    parser.add_argument("--step", default="Build", choices=STEP_ORDER, help="with --record-ci: the run's starting step")
+    parser.add_argument("--run", default=os.environ.get("GITHUB_RUN_ID", "local"), help="with --record-ci: the run id")
+    # In CI the runner's own logs are this run, which --record-ci records; the report reads them from
+    # ci-usage.jsonl, so it doesn't read them again as local logs.
+    in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
+    parser.add_argument("--claude-dir", default="" if in_ci else os.path.expanduser("~/.claude/projects"))
+    parser.add_argument("--codex-dir", default="" if in_ci else os.path.expanduser("~/.codex/sessions"))
     args = parser.parse_args(argv)
+
+    if args.record_ci:
+        folder = change_dir(args.change)
+        if folder is None:
+            print(f"No change folder for '{args.change}' in openspec/changes/ or its archive.", file=sys.stderr)
+            return 1
+        logs = args.claude_dir or os.path.expanduser("~/.claude/projects")
+        lines = record_ci(logs, REPO, load_prices(), args.step, args.run)
+        if not lines:
+            print(f"No Claude Code logs for this checkout in {logs}; nothing recorded.", file=sys.stderr)
+            return 0
+        write_ci_usage(folder, lines, args.run)
+        print(f"Recorded {len(lines)} line(s) for run {args.run} in {folder.relative_to(REPO)}/{CI_USAGE}", file=sys.stderr)
+        return 0
 
     folder = change_dir(args.change)
     if folder is None and not args.print_only:
@@ -559,7 +658,8 @@ def main(argv=None):
         print(f"On '{branch or 'no branch'}': run this on the change's branch, or pass --branch <the change's branch>.",
               file=sys.stderr)
         return 2
-    report, _, _ = build_report(args.change, branch, args.claude_dir, args.codex_dir, load_prices())
+    report, _, _ = build_report(args.change, branch, args.claude_dir, args.codex_dir, load_prices(),
+                                ci_usage=read_ci_usage(folder))
     if not args.print_only:
         (folder / "cost.md").write_text(report)
         print(f"Wrote {folder.relative_to(REPO)}/cost.md\n", file=sys.stderr)

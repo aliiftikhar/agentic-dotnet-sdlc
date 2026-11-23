@@ -456,5 +456,66 @@ class CostReportTests(unittest.TestCase):
         self.assertEqual(cost, 0)
 
 
+class CiRunTests(unittest.TestCase):
+    def setUp(self):
+        self.logs = Logs()
+
+    def tearDown(self):
+        self.logs.tmp.cleanup()
+
+    def record(self, step="Build"):
+        return cost_report.record_ci(self.logs.claude, REPO, PRICES, step, "42")
+
+    def test_build_run_split_by_markers_and_verifier(self):
+        self.logs.session("ci", [
+            response("m1", "agent/87-add-a", tools=[skill("openspec-apply-change", "add-a")]),
+            response("m2", "agent/87-add-a", tools=[{"id": "v1", "name": "Agent", "input": {"subagent_type": "verifier"}}]),
+            response("m3", "agent/87-add-a", tools=[skill("policy-review", "add-a")]),
+            response("m4", "agent/87-add-a", tools=[skill("openspec-archive-change", "add-a")], output=500_000),
+        ])
+        self.logs.subagent("ci", "a1", "verifier", "v1", [response("s1", "agent/87-add-a", model="claude-haiku-5-5")])
+        lines = self.record()
+        got = {(l["step"], l["model"]): l["output"] for l in lines}
+        self.assertEqual(got, {("Build", "claude-opus-5-5"): 2_000_000, ("Verify", "claude-haiku-5-5"): 1_000_000,
+                               ("Policy review", "claude-opus-5-5"): 1_000_000, ("Archive", "claude-opus-5-5"): 500_000})
+        self.assertTrue(all(l["agent"] == "Claude Code (CI)" and l["run"] == "42" for l in lines))
+        self.assertAlmostEqual(next(l for l in lines if l["step"] == "Build")["cost"], 40.0)
+
+    def test_starting_step_and_other_subagents(self):
+        self.logs.session("ci", [response("m1", "x", tools=[{"id": "e1", "name": "Agent", "input": {"subagent_type": "Explore"}}])])
+        self.logs.subagent("ci", "a1", "Explore", "e1", [response("s1", "x")])
+        lines = self.record("PR and review")
+        self.assertEqual([(l["step"], l["output"]) for l in lines], [("PR and review", 2_000_000)])
+
+    def test_no_logs(self):
+        self.assertEqual(cost_report.record_ci(os.path.join(self.logs.tmp.name, "none"), REPO, PRICES, "Plan", "1"), [])
+
+    def test_unpriced_model(self):
+        self.logs.session("ci", [response("m1", "x", model="mystery-model")])
+        self.assertIsNone(self.record()[0]["cost"])
+
+    def test_write_replaces_same_run(self):
+        folder = self.logs.tmp.name
+        cost_report.write_ci_usage(folder, [{"run": "1", "step": "Plan"}], "1")
+        cost_report.write_ci_usage(folder, [{"run": "2", "step": "Build"}], "2")
+        cost_report.write_ci_usage(folder, [{"run": "2", "step": "Verify"}], "2")
+        self.assertEqual([(l["run"], l["step"]) for l in cost_report.read_ci_usage(folder)], [("1", "Plan"), ("2", "Verify")])
+
+    def test_report_includes_ci_rows(self):
+        self.logs.session("s1", [response("m1", "feat/a", tools=[skill("opsx:apply", "add-a")])])
+        ci = [{"step": "Plan", "model": "claude-opus-5-5", "input": 0, "cache_write_5m": 0, "cache_write_1h": 0,
+               "cache_read": 0, "output": 500_000, "cost": 10.0, "run": "7"}]
+        text, cost, tokens = cost_report.build_report("add-a", "feat/a", self.logs.claude, self.logs.codex, PRICES,
+                                                      repo=REPO, today="2026-11-21", known=(), ci_usage=ci)
+        self.assertIn("| Plan | Claude Code (CI) | claude-opus-5-5 | 0 | 0 | 0 | 500,000 | $10.00 |", text)
+        self.assertAlmostEqual(cost, 30.0)
+        self.assertEqual(tokens, 1_500_000)
+        self.assertIn("final few turns", text)
+
+    def test_ci_report_skips_runner_logs(self):
+        self.assertEqual(cost_report.claude_sessions("", REPO), [])
+        self.assertEqual(cost_report.codex_sessions("", REPO), [])
+
+
 if __name__ == "__main__":
     unittest.main()
