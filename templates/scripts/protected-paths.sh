@@ -3,6 +3,7 @@
 # Agents change these paths only when the repo owner asked; the owner approves the PR with the
 # `protected-ok` label, which makes CI skip this check.
 # Keep this list in sync with the "ask" rules in .claude/settings.json.
+# An added or changed NuGet package (a PackageReference line in a .csproj) also needs protected-ok.
 # --- Configure for your repository -------------------------------------------------
 protected=(
   .github/
@@ -42,6 +43,14 @@ is_protected() {
 hits=$(while read -r file; do
   [ -n "$file" ] && is_protected "$file" && echo "$file"
 done <<<"$changed")
+
+# New or changed packages: + lines with <PackageReference in the .csproj diff (committed or not).
+packages=$( { git diff --no-renames -U0 "$base" -- '*.csproj'
+              git ls-files --others --exclude-standard -- '*.csproj' | while read -r f; do sed 's/^/+/' "$f"; done
+            } | grep -E '^\+[^+].*<PackageReference' | sed 's/^+[[:space:]]*//' )
+if [ -n "$packages" ]; then
+  hits=$(printf '%s\n%s' "$hits" "$(sed 's/^/package: /' <<<"$packages")" | sed '/^$/d')
+fi
 
 if [ -n "$hits" ]; then
   echo "Protected-paths check failed: this branch changes files that need the repo owner's approval:" >&2

@@ -1,279 +1,396 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1762" height="1234" viewBox="0 0 1762 1234" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1762" height="1721" viewBox="0 0 1762 1721" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
 <rect width="100%" height="100%" fill="#ffffff"/>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker><marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8250df"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker><marker id="arrow-eval" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker><marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8250df"/></marker><marker id="arrow-skip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker><marker id="arrow-eval" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker><marker id="arrow-local" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker><marker id="arrow-agent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#bc4c00"/></marker></defs>
 <text x="24" y="46" font-size="22" font-weight="600" fill="#1f2328">Agentic SDLC map</text>
-<text x="24" y="72" font-size="13" fill="#59636e">How a change moves through the kit, as of v2.8. The purple arrow goes back to Build; dashed arrows skip a stage with the owner&#x27;s no-spec label; the green loop tests the harness itself.</text>
-<rect x="128" y="158" width="250" height="40" rx="8" fill="#0969da"/>
-<text x="253.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">1 · Request</text>
-<line x1="380" y1="178.0" x2="398" y2="178.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="400" y="158" width="250" height="40" rx="8" fill="#0969da"/>
-<text x="525.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">2 · Plan</text>
-<line x1="652" y1="178.0" x2="670" y2="178.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="672" y="158" width="250" height="40" rx="8" fill="#0969da"/>
-<text x="797.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">3 · Build</text>
-<line x1="924" y1="178.0" x2="942" y2="178.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="944" y="158" width="250" height="40" rx="8" fill="#0969da"/>
-<text x="1069.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">4 · Check</text>
-<line x1="1196" y1="178.0" x2="1214" y2="178.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1216" y="158" width="250" height="40" rx="8" fill="#0969da"/>
-<text x="1341.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">5 · PR and review</text>
-<line x1="1468" y1="178.0" x2="1486" y2="178.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="1488" y="158" width="250" height="40" rx="8" fill="#0969da"/>
-<text x="1613.0" y="184" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">6 · Merge and release</text>
-<text x="24" y="233" font-size="13" font-weight="600" fill="#59636e">Who</text>
-<rect x="128" y="210" width="250" height="85" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="141" cy="229" r="2.2" fill="#59636e"/>
-<text x="150" y="233" font-size="12.5" fill="#1f2328">Owner</text>
-<rect x="400" y="210" width="250" height="85" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="413" cy="229" r="2.2" fill="#59636e"/>
-<text x="422" y="233" font-size="12.5" fill="#1f2328">Agent proposes (/opsx:propose)</text>
-<circle cx="413" cy="251" r="2.2" fill="#59636e"/>
-<text x="422" y="255" font-size="12.5" fill="#1f2328">Owner approves or asks for changes</text>
-<text x="422" y="272" font-size="12.5" fill="#1f2328">(/opsx:update)</text>
-<rect x="672" y="210" width="250" height="85" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="685" cy="229" r="2.2" fill="#59636e"/>
-<text x="694" y="233" font-size="12.5" fill="#1f2328">Agent applies on a branch</text>
-<text x="694" y="250" font-size="12.5" fill="#1f2328">(/opsx:apply)</text>
-<rect x="944" y="210" width="250" height="85" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="957" cy="229" r="2.2" fill="#59636e"/>
-<text x="966" y="233" font-size="12.5" fill="#1f2328">Verifier subagent (fresh context)</text>
-<circle cx="957" cy="251" r="2.2" fill="#59636e"/>
-<text x="966" y="255" font-size="12.5" fill="#1f2328">Agent: policy-review skill, then</text>
-<text x="966" y="272" font-size="12.5" fill="#1f2328">archive (/opsx:archive)</text>
-<rect x="1216" y="210" width="250" height="85" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1229" cy="229" r="2.2" fill="#59636e"/>
-<text x="1238" y="233" font-size="12.5" fill="#1f2328">Agent opens the PR</text>
-<circle cx="1229" cy="251" r="2.2" fill="#59636e"/>
-<text x="1238" y="255" font-size="12.5" fill="#1f2328">CI</text>
-<circle cx="1229" cy="273" r="2.2" fill="#59636e"/>
-<text x="1238" y="277" font-size="12.5" fill="#1f2328">AI reviewer (Codex)</text>
-<rect x="1488" y="210" width="250" height="85" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1501" cy="229" r="2.2" fill="#59636e"/>
-<text x="1510" y="233" font-size="12.5" fill="#1f2328">Owner only</text>
-<text x="24" y="328" font-size="13" font-weight="600" fill="#59636e">Produces</text>
-<rect x="128" y="305" width="250" height="131" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="141" cy="324" r="2.2" fill="#59636e"/>
-<text x="150" y="328" font-size="12.5" fill="#1f2328">Issue or plain request with</text>
-<text x="150" y="345" font-size="12.5" fill="#1f2328">acceptance criteria</text>
-<rect x="400" y="305" width="250" height="131" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="413" cy="324" r="2.2" fill="#59636e"/>
-<text x="422" y="328" font-size="12.5" fill="#1f2328">openspec/changes/&lt;name&gt;/:</text>
-<text x="422" y="345" font-size="12.5" fill="#1f2328">proposal.md, specs/, design.md,</text>
-<text x="422" y="362" font-size="12.5" fill="#1f2328">tasks.md</text>
-<circle cx="413" cy="380" r="2.2" fill="#59636e"/>
-<text x="422" y="384" font-size="12.5" fill="#1f2328">UI: mockups/ (desktop + phone)</text>
-<rect x="672" y="305" width="250" height="131" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="685" cy="324" r="2.2" fill="#59636e"/>
-<text x="694" y="328" font-size="12.5" fill="#1f2328">Code and tests</text>
-<circle cx="685" cy="346" r="2.2" fill="#59636e"/>
-<text x="694" y="350" font-size="12.5" fill="#1f2328">Ticked tasks.md</text>
-<circle cx="685" cy="368" r="2.2" fill="#59636e"/>
-<text x="694" y="372" font-size="12.5" fill="#1f2328">Bug fix: failing test committed first,</text>
-<text x="694" y="389" font-size="12.5" fill="#1f2328">failing-test.md</text>
-<rect x="944" y="305" width="250" height="131" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="957" cy="324" r="2.2" fill="#59636e"/>
-<text x="966" y="328" font-size="12.5" fill="#1f2328">verification.md with a verdict</text>
-<circle cx="957" cy="346" r="2.2" fill="#59636e"/>
-<text x="966" y="350" font-size="12.5" fill="#1f2328">policy-review.md</text>
-<circle cx="957" cy="368" r="2.2" fill="#59636e"/>
-<text x="966" y="372" font-size="12.5" fill="#1f2328">Spec merged into openspec/specs/</text>
-<circle cx="957" cy="390" r="2.2" fill="#59636e"/>
-<text x="966" y="394" font-size="12.5" fill="#1f2328">screenshots/ and screenshots.md</text>
-<rect x="1216" y="305" width="250" height="131" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1229" cy="324" r="2.2" fill="#59636e"/>
-<text x="1238" y="328" font-size="12.5" fill="#1f2328">PR from the template: spec, verdict,</text>
-<text x="1238" y="345" font-size="12.5" fill="#1f2328">mutation result, migration?, Deploy</text>
-<text x="1238" y="362" font-size="12.5" fill="#1f2328">order</text>
-<circle cx="1229" cy="380" r="2.2" fill="#59636e"/>
-<text x="1238" y="384" font-size="12.5" fill="#1f2328">cost.md: tokens and estimated cost</text>
-<text x="1238" y="401" font-size="12.5" fill="#1f2328">per step and model</text>
-<text x="1238" y="418" font-size="12.5" fill="#1f2328">(scripts/cost-report.sh)</text>
-<rect x="1488" y="305" width="250" height="131" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1501" cy="324" r="2.2" fill="#59636e"/>
-<text x="1510" y="328" font-size="12.5" fill="#1f2328">Merge to main</text>
-<circle cx="1501" cy="346" r="2.2" fill="#59636e"/>
-<text x="1510" y="350" font-size="12.5" fill="#1f2328">Deploys in the PR&#x27;s Deploy order</text>
-<text x="24" y="469" font-size="13" font-weight="600" fill="#59636e">Rules</text>
-<rect x="128" y="446" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="141" cy="465" r="2.2" fill="#59636e"/>
-<text x="150" y="469" font-size="12.5" fill="#1f2328">AGENTS.md: every change goes</text>
-<text x="150" y="486" font-size="12.5" fill="#1f2328">through OpenSpec</text>
-<rect x="400" y="446" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="413" cy="465" r="2.2" fill="#59636e"/>
-<text x="422" y="469" font-size="12.5" fill="#1f2328">openspec/config.yaml</text>
-<circle cx="413" cy="487" r="2.2" fill="#59636e"/>
-<text x="422" y="491" font-size="12.5" fill="#1f2328">AGENTS.md: Specs and Workflows</text>
-<rect x="672" y="446" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="685" cy="465" r="2.2" fill="#59636e"/>
-<text x="694" y="469" font-size="12.5" fill="#1f2328">AGENTS.md, project AGENTS.md</text>
-<circle cx="685" cy="487" r="2.2" fill="#59636e"/>
-<text x="694" y="491" font-size="12.5" fill="#1f2328">Skills: create-usecase, model-change,</text>
-<text x="694" y="508" font-size="12.5" fill="#1f2328">handler-tests</text>
-<rect x="944" y="446" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="957" cy="465" r="2.2" fill="#59636e"/>
-<text x="966" y="469" font-size="12.5" fill="#1f2328">.agents/agents/verifier.md</text>
-<circle cx="957" cy="487" r="2.2" fill="#59636e"/>
-<text x="966" y="491" font-size="12.5" fill="#1f2328">skills/policy-review</text>
-<rect x="1216" y="446" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1229" cy="465" r="2.2" fill="#59636e"/>
-<text x="1238" y="469" font-size="12.5" fill="#1f2328">Project AGENTS.md: Code Review</text>
-<text x="1238" y="486" font-size="12.5" fill="#1f2328">Rules</text>
-<circle cx="1229" cy="504" r="2.2" fill="#59636e"/>
-<text x="1238" y="508" font-size="12.5" fill="#1f2328">AGENTS.md: Review guidelines</text>
-<rect x="1488" y="446" width="250" height="80" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1501" cy="465" r="2.2" fill="#59636e"/>
-<text x="1510" y="469" font-size="12.5" fill="#1f2328">Labels only the owner adds: no-spec,</text>
-<text x="1510" y="486" font-size="12.5" fill="#1f2328">protected-ok</text>
-<text x="24" y="559" font-size="13" font-weight="600" fill="#59636e">Fed by</text>
-<rect x="128" y="536" width="250" height="102" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="141" cy="555" r="2.2" fill="#59636e"/>
-<text x="150" y="559" font-size="12.5" fill="#1f2328">ISSUE_TEMPLATE/change-request.md</text>
-<rect x="400" y="536" width="250" height="102" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="413" cy="555" r="2.2" fill="#59636e"/>
-<text x="422" y="559" font-size="12.5" fill="#1f2328">Living specs (openspec/specs/)</text>
-<circle cx="413" cy="577" r="2.2" fill="#59636e"/>
-<text x="422" y="581" font-size="12.5" fill="#1f2328">Root and project AGENTS.md</text>
-<circle cx="413" cy="599" r="2.2" fill="#59636e"/>
-<text x="422" y="603" font-size="12.5" fill="#1f2328">The code</text>
-<rect x="672" y="536" width="250" height="102" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="685" cy="555" r="2.2" fill="#59636e"/>
-<text x="694" y="559" font-size="12.5" fill="#1f2328">tasks.md and design.md</text>
-<circle cx="685" cy="577" r="2.2" fill="#59636e"/>
-<text x="694" y="581" font-size="12.5" fill="#1f2328">.editorconfig</text>
-<rect x="944" y="536" width="250" height="102" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="957" cy="555" r="2.2" fill="#59636e"/>
-<text x="966" y="559" font-size="12.5" fill="#1f2328">Change name and diff only, never the</text>
-<text x="966" y="576" font-size="12.5" fill="#1f2328">builder&#x27;s summary</text>
-<circle cx="957" cy="594" r="2.2" fill="#59636e"/>
-<text x="966" y="598" font-size="12.5" fill="#1f2328">Saved test session (.auth/, owner</text>
-<text x="966" y="615" font-size="12.5" fill="#1f2328">signs in once)</text>
-<rect x="1216" y="536" width="250" height="102" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1229" cy="555" r="2.2" fill="#59636e"/>
-<text x="1238" y="559" font-size="12.5" fill="#1f2328">The diff</text>
-<circle cx="1229" cy="577" r="2.2" fill="#59636e"/>
-<text x="1238" y="581" font-size="12.5" fill="#1f2328">The archived change</text>
-<circle cx="1229" cy="599" r="2.2" fill="#59636e"/>
-<text x="1238" y="603" font-size="12.5" fill="#1f2328">Local Claude Code and Codex</text>
-<text x="1238" y="620" font-size="12.5" fill="#1f2328">session logs (usage only)</text>
-<rect x="1488" y="536" width="250" height="102" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1501" cy="555" r="2.2" fill="#59636e"/>
-<text x="1510" y="559" font-size="12.5" fill="#1f2328">PR checks and review comments</text>
-<circle cx="1501" cy="577" r="2.2" fill="#59636e"/>
-<text x="1510" y="581" font-size="12.5" fill="#1f2328">Verifier&#x27;s manual checks</text>
-<text x="24" y="671" font-size="13" font-weight="600" fill="#59636e">Checks</text>
-<rect x="128" y="648" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="141" cy="667" r="2.2" fill="#59636e"/>
-<text x="150" y="671" font-size="12.5" fill="#1f2328">Owner reads the request</text>
-<rect x="400" y="648" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="413" cy="667" r="2.2" fill="#59636e"/>
-<text x="422" y="671" font-size="12.5" fill="#1f2328">openspec validate --strict</text>
-<circle cx="413" cy="689" r="2.2" fill="#59636e"/>
-<text x="422" y="693" font-size="12.5" fill="#1f2328">Proposal flags personal data, auth,</text>
-<text x="422" y="710" font-size="12.5" fill="#1f2328">payments, AI providers</text>
-<circle cx="413" cy="728" r="2.2" fill="#59636e"/>
-<text x="422" y="732" font-size="12.5" fill="#1f2328">UI mock-up rendered with the app&#x27;s</text>
-<text x="422" y="749" font-size="12.5" fill="#1f2328">own CSS, no app running</text>
-<rect x="672" y="648" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="685" cy="667" r="2.2" fill="#59636e"/>
-<text x="694" y="671" font-size="12.5" fill="#1f2328">Build and unit tests (Stop hook)</text>
-<circle cx="685" cy="689" r="2.2" fill="#59636e"/>
-<text x="694" y="693" font-size="12.5" fill="#1f2328">Architecture tests</text>
-<circle cx="685" cy="711" r="2.2" fill="#59636e"/>
-<text x="694" y="715" font-size="12.5" fill="#1f2328">C# format check (Stop hook)</text>
-<circle cx="685" cy="733" r="2.2" fill="#59636e"/>
-<text x="694" y="737" font-size="12.5" fill="#1f2328">Bug fix: test fails first, for the bug&#x27;s</text>
-<text x="694" y="754" font-size="12.5" fill="#1f2328">reason</text>
-<rect x="944" y="648" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="957" cy="667" r="2.2" fill="#59636e"/>
-<text x="966" y="671" font-size="12.5" fill="#1f2328">Verifier: every scenario has a test or</text>
-<text x="966" y="688" font-size="12.5" fill="#1f2328">code, every task is done, design</text>
-<text x="966" y="705" font-size="12.5" fill="#1f2328">followed, nothing extra</text>
-<circle cx="957" cy="723" r="2.2" fill="#59636e"/>
-<text x="966" y="727" font-size="12.5" fill="#1f2328">Policy review: security and personal</text>
-<text x="966" y="744" font-size="12.5" fill="#1f2328">data</text>
-<circle cx="957" cy="762" r="2.2" fill="#59636e"/>
-<text x="966" y="766" font-size="12.5" fill="#1f2328">UI screenshots of changed pages,</text>
-<text x="966" y="783" font-size="12.5" fill="#1f2328">desktop and phone; verifier uses them</text>
-<text x="966" y="800" font-size="12.5" fill="#1f2328">as evidence</text>
-<rect x="1216" y="648" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1229" cy="667" r="2.2" fill="#59636e"/>
-<text x="1238" y="671" font-size="12.5" fill="#1f2328">Mutation testing (0 survivors)</text>
-<circle cx="1229" cy="689" r="2.2" fill="#59636e"/>
-<text x="1238" y="693" font-size="12.5" fill="#1f2328">CI: build, tests, spec check</text>
-<circle cx="1229" cy="711" r="2.2" fill="#59636e"/>
-<text x="1238" y="715" font-size="12.5" fill="#1f2328">CI: format, protected paths</text>
-<circle cx="1229" cy="733" r="2.2" fill="#59636e"/>
-<text x="1238" y="737" font-size="12.5" fill="#1f2328">AI code review (Codex)</text>
-<rect x="1488" y="648" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1501" cy="667" r="2.2" fill="#59636e"/>
-<text x="1510" y="671" font-size="12.5" fill="#1f2328">Owner reads checks, review</text>
-<text x="1510" y="688" font-size="12.5" fill="#1f2328">comments and the PR</text>
-<circle cx="1501" cy="706" r="2.2" fill="#59636e"/>
-<text x="1510" y="710" font-size="12.5" fill="#1f2328">Verifier&#x27;s manual checks</text>
-<circle cx="1501" cy="728" r="2.2" fill="#59636e"/>
-<text x="1510" y="732" font-size="12.5" fill="#1f2328">Harness change: owner runs the</text>
-<text x="1510" y="749" font-size="12.5" fill="#1f2328">smoke evals</text>
-<text x="24" y="851" font-size="13" font-weight="600" fill="#59636e">Gates</text>
-<rect x="128" y="828" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="141" cy="847" r="2.2" fill="#59636e"/>
-<text x="150" y="851" font-size="12.5" fill="#1f2328">Owner decides what gets built</text>
-<rect x="400" y="828" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="413" cy="847" r="2.2" fill="#59636e"/>
-<text x="422" y="851" font-size="12.5" fill="#1f2328">Agent stops after propose</text>
-<circle cx="413" cy="869" r="2.2" fill="#59636e"/>
-<text x="422" y="873" font-size="12.5" fill="#1f2328">Owner approves the plan and the</text>
-<text x="422" y="890" font-size="12.5" fill="#1f2328">mock-up</text>
-<circle cx="413" cy="908" r="2.2" fill="#59636e"/>
-<text x="422" y="912" font-size="12.5" fill="#1f2328">spec-check.sh: mock-up committed</text>
-<text x="422" y="929" font-size="12.5" fill="#1f2328">before UI code</text>
-<rect x="672" y="828" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="685" cy="847" r="2.2" fill="#59636e"/>
-<text x="694" y="851" font-size="12.5" fill="#1f2328">Git hooks: no commits to main</text>
-<circle cx="685" cy="869" r="2.2" fill="#59636e"/>
-<text x="694" y="873" font-size="12.5" fill="#1f2328">Failing test locked once committed</text>
-<circle cx="685" cy="891" r="2.2" fill="#59636e"/>
-<text x="694" y="895" font-size="12.5" fill="#1f2328">Deny: merge, deploy, --no-verify</text>
-<circle cx="685" cy="913" r="2.2" fill="#59636e"/>
-<text x="694" y="917" font-size="12.5" fill="#1f2328">Ask: edits to protected paths</text>
-<rect x="944" y="828" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="957" cy="847" r="2.2" fill="#59636e"/>
-<text x="966" y="851" font-size="12.5" fill="#1f2328">spec-check.sh: plan matches diff</text>
-<circle cx="957" cy="869" r="2.2" fill="#59636e"/>
-<text x="966" y="873" font-size="12.5" fill="#1f2328">spec-check.sh: verdict passes</text>
-<circle cx="957" cy="891" r="2.2" fill="#59636e"/>
-<text x="966" y="895" font-size="12.5" fill="#1f2328">spec-check.sh: test commit before the</text>
-<text x="966" y="912" font-size="12.5" fill="#1f2328">fix</text>
-<circle cx="957" cy="930" r="2.2" fill="#59636e"/>
-<text x="966" y="934" font-size="12.5" fill="#1f2328">spec-check.sh: UI change has</text>
-<text x="966" y="951" font-size="12.5" fill="#1f2328">screenshots newer than the code</text>
-<rect x="1216" y="828" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1229" cy="847" r="2.2" fill="#59636e"/>
-<text x="1238" y="851" font-size="12.5" fill="#1f2328">Before gh pr create: spec check and</text>
-<text x="1238" y="868" font-size="12.5" fill="#1f2328">mutation check must pass</text>
-<rect x="1488" y="828" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
-<circle cx="1501" cy="847" r="2.2" fill="#59636e"/>
-<text x="1510" y="851" font-size="12.5" fill="#1f2328">Only the owner merges</text>
-<circle cx="1501" cy="869" r="2.2" fill="#59636e"/>
-<text x="1510" y="873" font-size="12.5" fill="#1f2328">pre-push hook: no pushes to main</text>
-<circle cx="1501" cy="891" r="2.2" fill="#59636e"/>
-<text x="1510" y="895" font-size="12.5" fill="#1f2328">Deny rules: agents can&#x27;t merge or</text>
-<text x="1510" y="912" font-size="12.5" fill="#1f2328">deploy</text>
-<path d="M1341.0,156 V132 H797.0 V155" fill="none" stroke="#8250df" stroke-width="2" marker-end="url(#arrow-loop)"/>
-<path d="M1069.0,156 V132" stroke="#8250df" stroke-width="2"/>
-<circle cx="1069.0" cy="132" r="3.5" fill="#8250df"/>
-<text x="1069.0" y="124" font-size="12.5" font-weight="600" fill="#8250df" text-anchor="middle">↺ FAIL verdict on [4. Check] or [5. PR and review] loops back to [3. Build]; with new commits on the same branch</text>
-<path d="M277.0,971 V993 H773.0 V972" fill="none" stroke="#6e7781" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-skip)"/>
-<text x="525.0" y="1011" font-size="12" fill="#6e7781" text-anchor="middle">&quot;no-spec&quot; github label skips [2. Plan] step.</text>
-<path d="M821.0,971 V993 H1317.0 V972" fill="none" stroke="#6e7781" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-skip)"/>
-<text x="1069.0" y="1011" font-size="12" fill="#6e7781" text-anchor="middle">&quot;no-spec&quot; github label skips [4. Check] step.</text>
-<rect x="168" y="1077" width="1298" height="133" rx="8" fill="#f0fff4" stroke="#1a7f37" stroke-width="1.5"/>
-<text x="184" y="1099" font-size="14" font-weight="600" fill="#1a7f37">↻ Harness evals: when AGENTS.md, skills, hooks, agents or check scripts change</text>
-<text x="190" y="1125" font-size="12.5" fill="#1f2328">1. Owner runs scripts/eval-run.sh: the smoke set (~5 tasks), or all tasks for a baseline</text>
-<text x="190" y="1147" font-size="12.5" fill="#1f2328">2. Real tasks from the repo (remove, replay, bugfix) go through stages 1 to 6 in a throwaway copy</text>
-<text x="190" y="1169" font-size="12.5" fill="#1f2328">3. Scored on 6 checks: committed, unit, spec, mutation, format, hidden answer-key tests</text>
-<text x="190" y="1191" font-size="12.5" fill="#1f2328">4. Compared with the last run at the same agent, model and effort: keep or revert the change</text>
-<path d="M1613.0,971 V1143.5 H1469" fill="none" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-eval)"/>
-<text x="1605.0" y="1056.25" font-size="12.5" font-weight="600" fill="#1a7f37" text-anchor="end">harness change merged</text>
-<path d="M166,1143.5 H112 V486.0 H125" fill="none" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-eval)"/>
-<text x="104" y="814.75" font-size="12.5" font-weight="600" fill="#1a7f37" text-anchor="middle" transform="rotate(-90 104 814.75)">results shape the Rules</text>
+<text x="24" y="72" font-size="13" fill="#59636e">How a change moves through the kit, as of v3. Top: the two ways to start a change. Grid: the six stages both ways go through. Orange points apply to agent runs only; the purple arrow goes back to Build; dashed arrows skip a stage with no-spec; the green loop tests the harness itself.</text>
+<text x="24" y="112" font-size="16" font-weight="600" fill="#1f2328">Two ways to run the same flow</text>
+<text x="24" y="147" font-size="13.5" font-weight="700" fill="#0969da">On your</text>
+<text x="24" y="164" font-size="13.5" font-weight="700" fill="#0969da">machine</text>
+<text x="24" y="181" font-size="11.5" fill="#59636e">you drive the</text>
+<text x="24" y="196" font-size="11.5" fill="#59636e">agent</text>
+<rect x="128" y="124" width="250" height="91" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="140" y="147" font-size="12.5" fill="#1f2328">You pick an issue, or write a request</text>
+<line x1="380" y1="169.5" x2="398" y2="169.5" stroke="#0969da" stroke-width="2.5" marker-end="url(#arrow-local)"/>
+<rect x="400" y="124" width="250" height="91" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="412" y="147" font-size="12.5" fill="#1f2328">You run /opsx:propose and approve the</text>
+<text x="412" y="164" font-size="12.5" fill="#1f2328">plan in your session</text>
+<line x1="652" y1="169.5" x2="670" y2="169.5" stroke="#0969da" stroke-width="2.5" marker-end="url(#arrow-local)"/>
+<rect x="672" y="124" width="250" height="91" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="684" y="147" font-size="12.5" fill="#1f2328">Agent builds on a feature branch</text>
+<text x="684" y="164" font-size="12.5" fill="#1f2328">(/opsx:apply)</text>
+<line x1="924" y1="169.5" x2="942" y2="169.5" stroke="#0969da" stroke-width="2.5" marker-end="url(#arrow-local)"/>
+<rect x="944" y="124" width="250" height="91" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="956" y="147" font-size="12.5" fill="#1f2328">Verifier, policy review and archive, in</text>
+<text x="956" y="164" font-size="12.5" fill="#1f2328">your session</text>
+<line x1="1196" y1="169.5" x2="1214" y2="169.5" stroke="#0969da" stroke-width="2.5" marker-end="url(#arrow-local)"/>
+<rect x="1216" y="124" width="250" height="91" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="1228" y="147" font-size="12.5" fill="#1f2328">Agent opens the PR; CI and Codex</text>
+<text x="1228" y="164" font-size="12.5" fill="#1f2328">review it</text>
+<rect x="1226" y="176" width="230" height="29" rx="5" fill="#ffffff" stroke="#0969da" stroke-dasharray="4 3"/>
+<text x="1234" y="194" font-size="12" font-weight="600" fill="#0969da">↺ you ask for fixes in your session</text>
+<line x1="1468" y1="169.5" x2="1486" y2="169.5" stroke="#0969da" stroke-width="2.5" marker-end="url(#arrow-local)"/>
+<rect x="1488" y="124" width="250" height="91" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="1500" y="147" font-size="12.5" fill="#1f2328">You merge</text>
+<text x="24" y="254" font-size="13.5" font-weight="700" fill="#bc4c00">From a label</text>
+<text x="24" y="271" font-size="11.5" fill="#59636e">agents run in</text>
+<text x="24" y="286" font-size="11.5" fill="#59636e">GitHub Actions</text>
+<rect x="128" y="231" width="250" height="108" rx="8" fill="#fff1e5" stroke="#bc4c00" stroke-width="1.5"/>
+<text x="140" y="254" font-size="12.5" fill="#1f2328">You add the agent:plan label to the</text>
+<text x="140" y="271" font-size="12.5" fill="#1f2328">issue</text>
+<line x1="380" y1="285.0" x2="398" y2="285.0" stroke="#bc4c00" stroke-width="2.5" marker-end="url(#arrow-agent)"/>
+<rect x="400" y="231" width="250" height="108" rx="8" fill="#fff1e5" stroke="#bc4c00" stroke-width="1.5"/>
+<text x="412" y="254" font-size="12.5" fill="#1f2328">Agent opens a plan PR for you to</text>
+<text x="412" y="271" font-size="12.5" fill="#1f2328">review; you merge it to approve</text>
+<rect x="410" y="300" width="230" height="29" rx="5" fill="#ffffff" stroke="#bc4c00" stroke-dasharray="4 3"/>
+<text x="418" y="318" font-size="12" font-weight="600" fill="#bc4c00">↺ your comments start revision runs</text>
+<line x1="652" y1="285.0" x2="670" y2="285.0" stroke="#bc4c00" stroke-width="2.5" marker-end="url(#arrow-agent)"/>
+<rect x="672" y="231" width="250" height="108" rx="8" fill="#fff1e5" stroke="#bc4c00" stroke-width="1.5"/>
+<text x="684" y="254" font-size="12.5" fill="#1f2328">Build run on the issue&#x27;s agent/ branch,</text>
+<text x="684" y="271" font-size="12.5" fill="#1f2328">updated from main</text>
+<line x1="924" y1="285.0" x2="942" y2="285.0" stroke="#bc4c00" stroke-width="2.5" marker-end="url(#arrow-agent)"/>
+<rect x="944" y="231" width="250" height="108" rx="8" fill="#fff1e5" stroke="#bc4c00" stroke-width="1.5"/>
+<text x="956" y="254" font-size="12.5" fill="#1f2328">The same checks, run by the agent in</text>
+<text x="956" y="271" font-size="12.5" fill="#1f2328">CI</text>
+<line x1="1196" y1="285.0" x2="1214" y2="285.0" stroke="#bc4c00" stroke-width="2.5" marker-end="url(#arrow-agent)"/>
+<rect x="1216" y="231" width="250" height="108" rx="8" fill="#fff1e5" stroke="#bc4c00" stroke-width="1.5"/>
+<text x="1228" y="254" font-size="12.5" fill="#1f2328">PR into main; the workflow asks</text>
+<text x="1228" y="271" font-size="12.5" fill="#1f2328">Codex to review from your account</text>
+<rect x="1226" y="283" width="230" height="46" rx="5" fill="#ffffff" stroke="#bc4c00" stroke-dasharray="4 3"/>
+<text x="1234" y="301" font-size="12" font-weight="600" fill="#bc4c00">↺ review comments and Codex</text>
+<text x="1234" y="318" font-size="12" font-weight="600" fill="#bc4c00">findings start fix runs</text>
+<line x1="1468" y1="285.0" x2="1486" y2="285.0" stroke="#bc4c00" stroke-width="2.5" marker-end="url(#arrow-agent)"/>
+<rect x="1488" y="231" width="250" height="108" rx="8" fill="#fff1e5" stroke="#bc4c00" stroke-width="1.5"/>
+<text x="1500" y="254" font-size="12.5" fill="#1f2328">You merge</text>
+<text x="933.0" y="365" font-size="13.5" font-weight="600" fill="#59636e" text-anchor="middle">▼  Both ways go through the same six stages below: the same rules, checks and gates  ▼</text>
+<rect x="128" y="443" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="253.0" y="469" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">1 · Request</text>
+<line x1="380" y1="463.0" x2="398" y2="463.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="400" y="443" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="525.0" y="469" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">2 · Plan</text>
+<line x1="652" y1="463.0" x2="670" y2="463.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="672" y="443" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="797.0" y="469" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">3 · Build</text>
+<line x1="924" y1="463.0" x2="942" y2="463.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="944" y="443" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="1069.0" y="469" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">4 · Check</text>
+<line x1="1196" y1="463.0" x2="1214" y2="463.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1216" y="443" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="1341.0" y="469" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">5 · PR and review</text>
+<line x1="1468" y1="463.0" x2="1486" y2="463.0" stroke="#0969da" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1488" y="443" width="250" height="40" rx="8" fill="#0969da"/>
+<text x="1613.0" y="469" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">6 · Merge and release</text>
+<text x="24" y="518" font-size="13" font-weight="600" fill="#59636e">Who</text>
+<rect x="128" y="495" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="141" cy="514" r="2.2" fill="#59636e"/>
+<text x="150" y="518" font-size="12.5" fill="#1f2328">Owner</text>
+<rect x="400" y="495" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="413" cy="514" r="2.2" fill="#59636e"/>
+<text x="422" y="518" font-size="12.5" fill="#1f2328">Agent proposes (/opsx:propose)</text>
+<circle cx="413" cy="536" r="2.2" fill="#59636e"/>
+<text x="422" y="540" font-size="12.5" fill="#1f2328">Owner approves or asks for changes</text>
+<text x="422" y="557" font-size="12.5" fill="#1f2328">(/opsx:update)</text>
+<rect x="405" y="566" width="240" height="51" rx="3" fill="#fff1e5"/>
+<circle cx="413" cy="575" r="2.2" fill="#bc4c00"/>
+<text x="422" y="579" font-size="12.5" fill="#bc4c00">CI agent opens a plan PR into the</text>
+<text x="422" y="596" font-size="12.5" fill="#bc4c00">build branch; owner comments, then</text>
+<text x="422" y="613" font-size="12.5" fill="#bc4c00">merges it</text>
+<rect x="672" y="495" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="685" cy="514" r="2.2" fill="#59636e"/>
+<text x="694" y="518" font-size="12.5" fill="#1f2328">Agent applies on a branch</text>
+<text x="694" y="535" font-size="12.5" fill="#1f2328">(/opsx:apply)</text>
+<rect x="677" y="544" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="685" cy="553" r="2.2" fill="#bc4c00"/>
+<text x="694" y="557" font-size="12.5" fill="#bc4c00">Build run in GitHub Actions (Claude</text>
+<text x="694" y="574" font-size="12.5" fill="#bc4c00">Code, Sonnet, auto mode)</text>
+<rect x="944" y="495" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="957" cy="514" r="2.2" fill="#59636e"/>
+<text x="966" y="518" font-size="12.5" fill="#1f2328">Verifier subagent (fresh context)</text>
+<circle cx="957" cy="536" r="2.2" fill="#59636e"/>
+<text x="966" y="540" font-size="12.5" fill="#1f2328">Agent: policy-review skill, then</text>
+<text x="966" y="557" font-size="12.5" fill="#1f2328">archive (/opsx:archive)</text>
+<rect x="1216" y="495" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1229" cy="514" r="2.2" fill="#59636e"/>
+<text x="1238" y="518" font-size="12.5" fill="#1f2328">Agent opens the PR</text>
+<circle cx="1229" cy="536" r="2.2" fill="#59636e"/>
+<text x="1238" y="540" font-size="12.5" fill="#1f2328">CI</text>
+<circle cx="1229" cy="558" r="2.2" fill="#59636e"/>
+<text x="1238" y="562" font-size="12.5" fill="#1f2328">AI reviewer (Codex)</text>
+<rect x="1221" y="571" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="1229" cy="580" r="2.2" fill="#bc4c00"/>
+<text x="1238" y="584" font-size="12.5" fill="#bc4c00">Fix runs from review comments and</text>
+<text x="1238" y="601" font-size="12.5" fill="#bc4c00">Codex findings</text>
+<rect x="1488" y="495" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1501" cy="514" r="2.2" fill="#59636e"/>
+<text x="1510" y="518" font-size="12.5" fill="#1f2328">Owner only</text>
+<text x="24" y="664" font-size="13" font-weight="600" fill="#59636e">Produces</text>
+<rect x="128" y="641" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="141" cy="660" r="2.2" fill="#59636e"/>
+<text x="150" y="664" font-size="12.5" fill="#1f2328">Issue or plain request with</text>
+<text x="150" y="681" font-size="12.5" fill="#1f2328">acceptance criteria</text>
+<rect x="133" y="690" width="240" height="17" rx="3" fill="#fff1e5"/>
+<circle cx="141" cy="699" r="2.2" fill="#bc4c00"/>
+<text x="150" y="703" font-size="12.5" fill="#bc4c00">agent:plan label on the issue</text>
+<rect x="400" y="641" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="413" cy="660" r="2.2" fill="#59636e"/>
+<text x="422" y="664" font-size="12.5" fill="#1f2328">openspec/changes/&lt;name&gt;/:</text>
+<text x="422" y="681" font-size="12.5" fill="#1f2328">proposal.md, specs/, design.md,</text>
+<text x="422" y="698" font-size="12.5" fill="#1f2328">tasks.md</text>
+<circle cx="413" cy="716" r="2.2" fill="#59636e"/>
+<text x="422" y="720" font-size="12.5" fill="#1f2328">UI: mockups/ (desktop + phone)</text>
+<rect x="672" y="641" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="685" cy="660" r="2.2" fill="#59636e"/>
+<text x="694" y="664" font-size="12.5" fill="#1f2328">Code and tests</text>
+<circle cx="685" cy="682" r="2.2" fill="#59636e"/>
+<text x="694" y="686" font-size="12.5" fill="#1f2328">Ticked tasks.md</text>
+<circle cx="685" cy="704" r="2.2" fill="#59636e"/>
+<text x="694" y="708" font-size="12.5" fill="#1f2328">Bug fix: failing test committed first,</text>
+<text x="694" y="725" font-size="12.5" fill="#1f2328">failing-test.md</text>
+<rect x="944" y="641" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="957" cy="660" r="2.2" fill="#59636e"/>
+<text x="966" y="664" font-size="12.5" fill="#1f2328">verification.md with a verdict</text>
+<circle cx="957" cy="682" r="2.2" fill="#59636e"/>
+<text x="966" y="686" font-size="12.5" fill="#1f2328">policy-review.md</text>
+<circle cx="957" cy="704" r="2.2" fill="#59636e"/>
+<text x="966" y="708" font-size="12.5" fill="#1f2328">Spec merged into openspec/specs/</text>
+<circle cx="957" cy="726" r="2.2" fill="#59636e"/>
+<text x="966" y="730" font-size="12.5" fill="#1f2328">screenshots/ and screenshots.md</text>
+<rect x="1216" y="641" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1229" cy="660" r="2.2" fill="#59636e"/>
+<text x="1238" y="664" font-size="12.5" fill="#1f2328">PR from the template: spec, verdict,</text>
+<text x="1238" y="681" font-size="12.5" fill="#1f2328">mutation result, migration?, Deploy</text>
+<text x="1238" y="698" font-size="12.5" fill="#1f2328">order</text>
+<circle cx="1229" cy="716" r="2.2" fill="#59636e"/>
+<text x="1238" y="720" font-size="12.5" fill="#1f2328">cost.md: tokens and estimated cost</text>
+<text x="1238" y="737" font-size="12.5" fill="#1f2328">per step and model</text>
+<text x="1238" y="754" font-size="12.5" fill="#1f2328">(scripts/cost-report.sh)</text>
+<rect x="1221" y="763" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="1229" cy="772" r="2.2" fill="#bc4c00"/>
+<text x="1238" y="776" font-size="12.5" fill="#bc4c00">ci-usage.jsonl: each CI run records</text>
+<text x="1238" y="793" font-size="12.5" fill="#bc4c00">its own usage</text>
+<rect x="1488" y="641" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1501" cy="660" r="2.2" fill="#59636e"/>
+<text x="1510" y="664" font-size="12.5" fill="#1f2328">Merge to main</text>
+<circle cx="1501" cy="682" r="2.2" fill="#59636e"/>
+<text x="1510" y="686" font-size="12.5" fill="#1f2328">Deploys in the PR&#x27;s Deploy order</text>
+<text x="24" y="844" font-size="13" font-weight="600" fill="#59636e">Rules</text>
+<rect x="128" y="821" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="141" cy="840" r="2.2" fill="#59636e"/>
+<text x="150" y="844" font-size="12.5" fill="#1f2328">AGENTS.md: every change goes</text>
+<text x="150" y="861" font-size="12.5" fill="#1f2328">through OpenSpec</text>
+<rect x="400" y="821" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="413" cy="840" r="2.2" fill="#59636e"/>
+<text x="422" y="844" font-size="12.5" fill="#1f2328">openspec/config.yaml</text>
+<circle cx="413" cy="862" r="2.2" fill="#59636e"/>
+<text x="422" y="866" font-size="12.5" fill="#1f2328">AGENTS.md: Specs and Workflows</text>
+<rect x="672" y="821" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="685" cy="840" r="2.2" fill="#59636e"/>
+<text x="694" y="844" font-size="12.5" fill="#1f2328">AGENTS.md, project AGENTS.md</text>
+<circle cx="685" cy="862" r="2.2" fill="#59636e"/>
+<text x="694" y="866" font-size="12.5" fill="#1f2328">Skills: create-usecase, model-change,</text>
+<text x="694" y="883" font-size="12.5" fill="#1f2328">handler-tests</text>
+<rect x="944" y="821" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="957" cy="840" r="2.2" fill="#59636e"/>
+<text x="966" y="844" font-size="12.5" fill="#1f2328">.agents/agents/verifier.md</text>
+<circle cx="957" cy="862" r="2.2" fill="#59636e"/>
+<text x="966" y="866" font-size="12.5" fill="#1f2328">skills/policy-review</text>
+<rect x="949" y="875" width="240" height="51" rx="3" fill="#fff1e5"/>
+<circle cx="957" cy="884" r="2.2" fill="#bc4c00"/>
+<text x="966" y="888" font-size="12.5" fill="#bc4c00">docs/threat-model.md: the policy</text>
+<text x="966" y="905" font-size="12.5" fill="#bc4c00">review checks harness changes</text>
+<text x="966" y="922" font-size="12.5" fill="#bc4c00">against it</text>
+<rect x="1216" y="821" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1229" cy="840" r="2.2" fill="#59636e"/>
+<text x="1238" y="844" font-size="12.5" fill="#1f2328">Project AGENTS.md: Code Review</text>
+<text x="1238" y="861" font-size="12.5" fill="#1f2328">Rules</text>
+<circle cx="1229" cy="879" r="2.2" fill="#59636e"/>
+<text x="1238" y="883" font-size="12.5" fill="#1f2328">AGENTS.md: Review guidelines</text>
+<rect x="1221" y="892" width="240" height="51" rx="3" fill="#fff1e5"/>
+<circle cx="1229" cy="901" r="2.2" fill="#bc4c00"/>
+<text x="1238" y="905" font-size="12.5" fill="#bc4c00">fix.md: Codex P0/P1 confirmed and</text>
+<text x="1238" y="922" font-size="12.5" fill="#bc4c00">fixed, P2 only real bugs, P3 not</text>
+<text x="1238" y="939" font-size="12.5" fill="#bc4c00">actioned</text>
+<rect x="1488" y="821" width="250" height="136" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1501" cy="840" r="2.2" fill="#59636e"/>
+<text x="1510" y="844" font-size="12.5" fill="#1f2328">Labels only the owner adds: no-spec,</text>
+<text x="1510" y="861" font-size="12.5" fill="#1f2328">protected-ok</text>
+<text x="24" y="990" font-size="13" font-weight="600" fill="#59636e">Fed by</text>
+<rect x="128" y="967" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="141" cy="986" r="2.2" fill="#59636e"/>
+<text x="150" y="990" font-size="12.5" fill="#1f2328">ISSUE_TEMPLATE/change-request.md</text>
+<rect x="400" y="967" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="413" cy="986" r="2.2" fill="#59636e"/>
+<text x="422" y="990" font-size="12.5" fill="#1f2328">Living specs (openspec/specs/)</text>
+<circle cx="413" cy="1008" r="2.2" fill="#59636e"/>
+<text x="422" y="1012" font-size="12.5" fill="#1f2328">Root and project AGENTS.md</text>
+<circle cx="413" cy="1030" r="2.2" fill="#59636e"/>
+<text x="422" y="1034" font-size="12.5" fill="#1f2328">The code</text>
+<rect x="672" y="967" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="685" cy="986" r="2.2" fill="#59636e"/>
+<text x="694" y="990" font-size="12.5" fill="#1f2328">tasks.md and design.md</text>
+<circle cx="685" cy="1008" r="2.2" fill="#59636e"/>
+<text x="694" y="1012" font-size="12.5" fill="#1f2328">.editorconfig</text>
+<rect x="944" y="967" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="957" cy="986" r="2.2" fill="#59636e"/>
+<text x="966" y="990" font-size="12.5" fill="#1f2328">Change name and diff only, never the</text>
+<text x="966" y="1007" font-size="12.5" fill="#1f2328">builder&#x27;s summary</text>
+<circle cx="957" cy="1025" r="2.2" fill="#59636e"/>
+<text x="966" y="1029" font-size="12.5" fill="#1f2328">Saved test session (.auth/, owner</text>
+<text x="966" y="1046" font-size="12.5" fill="#1f2328">signs in once)</text>
+<rect x="1216" y="967" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1229" cy="986" r="2.2" fill="#59636e"/>
+<text x="1238" y="990" font-size="12.5" fill="#1f2328">The diff</text>
+<circle cx="1229" cy="1008" r="2.2" fill="#59636e"/>
+<text x="1238" y="1012" font-size="12.5" fill="#1f2328">The archived change</text>
+<circle cx="1229" cy="1030" r="2.2" fill="#59636e"/>
+<text x="1238" y="1034" font-size="12.5" fill="#1f2328">Local Claude Code and Codex</text>
+<text x="1238" y="1051" font-size="12.5" fill="#1f2328">session logs (usage only)</text>
+<rect x="1221" y="1060" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="1229" cy="1069" r="2.2" fill="#bc4c00"/>
+<text x="1238" y="1073" font-size="12.5" fill="#bc4c00">CI logs, so a comment that a check</text>
+<text x="1238" y="1090" font-size="12.5" fill="#bc4c00">failed is enough</text>
+<rect x="1488" y="967" width="250" height="141" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1501" cy="986" r="2.2" fill="#59636e"/>
+<text x="1510" y="990" font-size="12.5" fill="#1f2328">PR checks and review comments</text>
+<circle cx="1501" cy="1008" r="2.2" fill="#59636e"/>
+<text x="1510" y="1012" font-size="12.5" fill="#1f2328">Verifier&#x27;s manual checks</text>
+<text x="24" y="1141" font-size="13" font-weight="600" fill="#59636e">Checks</text>
+<rect x="128" y="1118" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="141" cy="1137" r="2.2" fill="#59636e"/>
+<text x="150" y="1141" font-size="12.5" fill="#1f2328">Owner reads the request</text>
+<rect x="400" y="1118" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="413" cy="1137" r="2.2" fill="#59636e"/>
+<text x="422" y="1141" font-size="12.5" fill="#1f2328">openspec validate --strict</text>
+<circle cx="413" cy="1159" r="2.2" fill="#59636e"/>
+<text x="422" y="1163" font-size="12.5" fill="#1f2328">Proposal flags personal data, auth,</text>
+<text x="422" y="1180" font-size="12.5" fill="#1f2328">payments, AI providers</text>
+<circle cx="413" cy="1198" r="2.2" fill="#59636e"/>
+<text x="422" y="1202" font-size="12.5" fill="#1f2328">UI mock-up rendered with the app&#x27;s</text>
+<text x="422" y="1219" font-size="12.5" fill="#1f2328">own CSS, no app running</text>
+<rect x="672" y="1118" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="685" cy="1137" r="2.2" fill="#59636e"/>
+<text x="694" y="1141" font-size="12.5" fill="#1f2328">Build and unit tests (Stop hook)</text>
+<circle cx="685" cy="1159" r="2.2" fill="#59636e"/>
+<text x="694" y="1163" font-size="12.5" fill="#1f2328">Architecture tests</text>
+<circle cx="685" cy="1181" r="2.2" fill="#59636e"/>
+<text x="694" y="1185" font-size="12.5" fill="#1f2328">C# format check (Stop hook)</text>
+<circle cx="685" cy="1203" r="2.2" fill="#59636e"/>
+<text x="694" y="1207" font-size="12.5" fill="#1f2328">Bug fix: test fails first, for the bug&#x27;s</text>
+<text x="694" y="1224" font-size="12.5" fill="#1f2328">reason</text>
+<rect x="944" y="1118" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="957" cy="1137" r="2.2" fill="#59636e"/>
+<text x="966" y="1141" font-size="12.5" fill="#1f2328">Verifier: every scenario has a test or</text>
+<text x="966" y="1158" font-size="12.5" fill="#1f2328">code, every task is done, design</text>
+<text x="966" y="1175" font-size="12.5" fill="#1f2328">followed, nothing extra</text>
+<circle cx="957" cy="1193" r="2.2" fill="#59636e"/>
+<text x="966" y="1197" font-size="12.5" fill="#1f2328">Policy review: security and personal</text>
+<text x="966" y="1214" font-size="12.5" fill="#1f2328">data</text>
+<circle cx="957" cy="1232" r="2.2" fill="#59636e"/>
+<text x="966" y="1236" font-size="12.5" fill="#1f2328">UI screenshots of changed pages,</text>
+<text x="966" y="1253" font-size="12.5" fill="#1f2328">desktop and phone; verifier uses them</text>
+<text x="966" y="1270" font-size="12.5" fill="#1f2328">as evidence</text>
+<rect x="1216" y="1118" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1229" cy="1137" r="2.2" fill="#59636e"/>
+<text x="1238" y="1141" font-size="12.5" fill="#1f2328">Mutation testing (0 survivors)</text>
+<circle cx="1229" cy="1159" r="2.2" fill="#59636e"/>
+<text x="1238" y="1163" font-size="12.5" fill="#1f2328">CI: build, tests, spec check</text>
+<circle cx="1229" cy="1181" r="2.2" fill="#59636e"/>
+<text x="1238" y="1185" font-size="12.5" fill="#1f2328">CI: format, protected paths</text>
+<circle cx="1229" cy="1203" r="2.2" fill="#59636e"/>
+<text x="1238" y="1207" font-size="12.5" fill="#1f2328">AI code review (Codex)</text>
+<rect x="1221" y="1216" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="1229" cy="1225" r="2.2" fill="#bc4c00"/>
+<text x="1238" y="1229" font-size="12.5" fill="#bc4c00">Workflow asks Codex to review from</text>
+<text x="1238" y="1246" font-size="12.5" fill="#bc4c00">the owner&#x27;s account</text>
+<rect x="1488" y="1118" width="250" height="170" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1501" cy="1137" r="2.2" fill="#59636e"/>
+<text x="1510" y="1141" font-size="12.5" fill="#1f2328">Owner reads checks, review</text>
+<text x="1510" y="1158" font-size="12.5" fill="#1f2328">comments and the PR</text>
+<circle cx="1501" cy="1176" r="2.2" fill="#59636e"/>
+<text x="1510" y="1180" font-size="12.5" fill="#1f2328">Verifier&#x27;s manual checks</text>
+<circle cx="1501" cy="1198" r="2.2" fill="#59636e"/>
+<text x="1510" y="1202" font-size="12.5" fill="#1f2328">Harness change: owner runs the</text>
+<text x="1510" y="1219" font-size="12.5" fill="#1f2328">smoke evals</text>
+<text x="24" y="1321" font-size="13" font-weight="600" fill="#59636e">Gates</text>
+<rect x="128" y="1298" width="250" height="158" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="141" cy="1317" r="2.2" fill="#59636e"/>
+<text x="150" y="1321" font-size="12.5" fill="#1f2328">Owner decides what gets built</text>
+<rect x="133" y="1330" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="141" cy="1339" r="2.2" fill="#bc4c00"/>
+<text x="150" y="1343" font-size="12.5" fill="#bc4c00">Only AGENT_USERS can label, on</text>
+<text x="150" y="1360" font-size="12.5" fill="#bc4c00">issues they opened (agent_gate.py)</text>
+<rect x="400" y="1298" width="250" height="158" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="413" cy="1317" r="2.2" fill="#59636e"/>
+<text x="422" y="1321" font-size="12.5" fill="#1f2328">Agent stops after propose</text>
+<circle cx="413" cy="1339" r="2.2" fill="#59636e"/>
+<text x="422" y="1343" font-size="12.5" fill="#1f2328">Owner approves the plan and the</text>
+<text x="422" y="1360" font-size="12.5" fill="#1f2328">mock-up</text>
+<circle cx="413" cy="1378" r="2.2" fill="#59636e"/>
+<text x="422" y="1382" font-size="12.5" fill="#1f2328">spec-check.sh: mock-up committed</text>
+<text x="422" y="1399" font-size="12.5" fill="#1f2328">before UI code</text>
+<rect x="405" y="1408" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="413" cy="1417" r="2.2" fill="#bc4c00"/>
+<text x="422" y="1421" font-size="12.5" fill="#bc4c00">Merging the plan PR is the approval</text>
+<text x="422" y="1438" font-size="12.5" fill="#bc4c00">that starts the build</text>
+<rect x="672" y="1298" width="250" height="158" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="685" cy="1317" r="2.2" fill="#59636e"/>
+<text x="694" y="1321" font-size="12.5" fill="#1f2328">Git hooks: no commits to main</text>
+<circle cx="685" cy="1339" r="2.2" fill="#59636e"/>
+<text x="694" y="1343" font-size="12.5" fill="#1f2328">Failing test locked once committed</text>
+<circle cx="685" cy="1361" r="2.2" fill="#59636e"/>
+<text x="694" y="1365" font-size="12.5" fill="#1f2328">Deny: merge, deploy, --no-verify</text>
+<circle cx="685" cy="1383" r="2.2" fill="#59636e"/>
+<text x="694" y="1387" font-size="12.5" fill="#1f2328">Ask: edits to protected paths</text>
+<rect x="677" y="1396" width="240" height="34" rx="3" fill="#fff1e5"/>
+<circle cx="685" cy="1405" r="2.2" fill="#bc4c00"/>
+<text x="694" y="1409" font-size="12.5" fill="#bc4c00">In CI, ask rules can&#x27;t be approved,</text>
+<text x="694" y="1426" font-size="12.5" fill="#bc4c00">so protected-path edits are denied</text>
+<rect x="944" y="1298" width="250" height="158" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="957" cy="1317" r="2.2" fill="#59636e"/>
+<text x="966" y="1321" font-size="12.5" fill="#1f2328">spec-check.sh: plan matches diff</text>
+<circle cx="957" cy="1339" r="2.2" fill="#59636e"/>
+<text x="966" y="1343" font-size="12.5" fill="#1f2328">spec-check.sh: verdict passes</text>
+<circle cx="957" cy="1361" r="2.2" fill="#59636e"/>
+<text x="966" y="1365" font-size="12.5" fill="#1f2328">spec-check.sh: test commit before the</text>
+<text x="966" y="1382" font-size="12.5" fill="#1f2328">fix</text>
+<circle cx="957" cy="1400" r="2.2" fill="#59636e"/>
+<text x="966" y="1404" font-size="12.5" fill="#1f2328">spec-check.sh: UI change has</text>
+<text x="966" y="1421" font-size="12.5" fill="#1f2328">screenshots newer than the code</text>
+<rect x="1216" y="1298" width="250" height="158" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1229" cy="1317" r="2.2" fill="#59636e"/>
+<text x="1238" y="1321" font-size="12.5" fill="#1f2328">Before gh pr create: spec check and</text>
+<text x="1238" y="1338" font-size="12.5" fill="#1f2328">mutation check must pass</text>
+<rect x="1221" y="1347" width="240" height="51" rx="3" fill="#fff1e5"/>
+<circle cx="1229" cy="1356" r="2.2" fill="#bc4c00"/>
+<text x="1238" y="1360" font-size="12.5" fill="#bc4c00">Only write access starts fix runs;</text>
+<text x="1238" y="1377" font-size="12.5" fill="#bc4c00">Codex rounds capped</text>
+<text x="1238" y="1394" font-size="12.5" fill="#bc4c00">(AGENT_MAX_CODEX_ROUNDS)</text>
+<rect x="1488" y="1298" width="250" height="158" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+<circle cx="1501" cy="1317" r="2.2" fill="#59636e"/>
+<text x="1510" y="1321" font-size="12.5" fill="#1f2328">Only the owner merges</text>
+<circle cx="1501" cy="1339" r="2.2" fill="#59636e"/>
+<text x="1510" y="1343" font-size="12.5" fill="#1f2328">pre-push hook: no pushes to main</text>
+<circle cx="1501" cy="1361" r="2.2" fill="#59636e"/>
+<text x="1510" y="1365" font-size="12.5" fill="#1f2328">Deny rules: agents can&#x27;t merge or</text>
+<text x="1510" y="1382" font-size="12.5" fill="#1f2328">deploy</text>
+<circle cx="1501" cy="1400" r="2.2" fill="#59636e"/>
+<text x="1510" y="1404" font-size="12.5" fill="#1f2328">New or changed NuGet packages need</text>
+<text x="1510" y="1421" font-size="12.5" fill="#1f2328">protected-ok</text>
+<path d="M1341.0,441 V417 H797.0 V440" fill="none" stroke="#8250df" stroke-width="2" marker-end="url(#arrow-loop)"/>
+<path d="M1069.0,441 V417" stroke="#8250df" stroke-width="2"/>
+<circle cx="1069.0" cy="417" r="3.5" fill="#8250df"/>
+<text x="1069.0" y="409" font-size="12.5" font-weight="600" fill="#8250df" text-anchor="middle">↺ FAIL verdict on [4. Check] or [5. PR and review] loops back to [3. Build]; with new commits on the same branch</text>
+<path d="M277.0,1458 V1480 H773.0 V1459" fill="none" stroke="#6e7781" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-skip)"/>
+<text x="525.0" y="1498" font-size="12" fill="#6e7781" text-anchor="middle">&quot;no-spec&quot; github label skips [2. Plan] step.</text>
+<path d="M821.0,1458 V1480 H1317.0 V1459" fill="none" stroke="#6e7781" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-skip)"/>
+<text x="1069.0" y="1498" font-size="12" fill="#6e7781" text-anchor="middle">&quot;no-spec&quot; github label skips [4. Check] step.</text>
+<rect x="168" y="1564" width="1298" height="133" rx="8" fill="#f0fff4" stroke="#1a7f37" stroke-width="1.5"/>
+<text x="184" y="1586" font-size="14" font-weight="600" fill="#1a7f37">↻ Harness evals: when AGENTS.md, skills, hooks, agents or check scripts change</text>
+<text x="190" y="1612" font-size="12.5" fill="#1f2328">1. Owner runs scripts/eval-run.sh: the smoke set (~5 tasks), or all tasks for a baseline</text>
+<text x="190" y="1634" font-size="12.5" fill="#1f2328">2. Real tasks from the repo (remove, replay, bugfix) go through stages 1 to 6 in a throwaway copy</text>
+<text x="190" y="1656" font-size="12.5" fill="#1f2328">3. Scored on 6 checks: committed, unit, spec, mutation, format, hidden answer-key tests</text>
+<text x="190" y="1678" font-size="12.5" fill="#1f2328">4. Compared with the last run at the same agent, model and effort: keep or revert the change</text>
+<path d="M1613.0,1458 V1630.5 H1469" fill="none" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-eval)"/>
+<text x="1605.0" y="1543.25" font-size="12.5" font-weight="600" fill="#1a7f37" text-anchor="end">harness change merged</text>
+<path d="M166,1630.5 H112 V889.0 H125" fill="none" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-eval)"/>
+<text x="104" y="1259.75" font-size="12.5" font-weight="600" fill="#1a7f37" text-anchor="middle" transform="rotate(-90 104 1259.75)">results shape the Rules</text>
 </svg>

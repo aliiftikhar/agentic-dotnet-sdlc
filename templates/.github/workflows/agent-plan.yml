@@ -1,0 +1,169 @@
+name: Agent plan
+
+# Issue -> plan PR. See "Agent runs from issues" in AGENTS.md and openspec/specs/agent-runs/spec.md.
+#   start:  an agent user adds the agent:plan label to an issue an agent user opened. Creates
+#           agent/<issue>-<slug> (build branch) and agent/<issue>-<slug>-plan, and Claude opens a PR
+#           plan branch -> build branch with the OpenSpec proposal.
+#   revise: a reviewer with write access comments on, or reviews, an open plan PR. Claude updates the plan.
+# Who may start what is decided by scripts/agent_gate.py, always run from main.
+# Owner setup: secret CLAUDE_CODE_OAUTH_TOKEN, the Claude GitHub App, the agent:plan label;
+# optional repo variable AGENT_USERS.
+
+on:
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+      kind: ${{ steps.gate.outputs.kind }}
+      issue: ${{ steps.gate.outputs.issue }}
+      change: ${{ steps.gate.outputs.change }}
+      build_branch: ${{ steps.gate.outputs.build_branch }}
+      plan_branch: ${{ steps.gate.outputs.plan_branch }}
+      pr: ${{ steps.gate.outputs.pr }}
+      trigger: ${{ steps.gate.outputs.trigger }}
+    # Cheap first filter; the gate script does the real checks.
+    if: >-
+      (github.event_name == 'issues' && github.event.label.name == 'agent:plan') ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && github.event.comment.user.type != 'Bot') ||
+      (github.event_name == 'pull_request_review' && endsWith(github.event.pull_request.head.ref, '-plan') && startsWith(github.event.pull_request.base.ref, 'agent/') && github.event.review.user.type != 'Bot')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          sparse-checkout: scripts/agent_gate.py
+          sparse-checkout-cone-mode: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          AGENT_USERS: ${{ vars.AGENT_USERS }}
+        run: python3 scripts/agent_gate.py plan
+      - name: Tell the user why nothing runs
+        if: steps.gate.outputs.notice != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTICE: ${{ steps.gate.outputs.notice }}
+        run: gh issue comment "${{ steps.gate.outputs.notice_on }}" --repo "$GITHUB_REPOSITORY" --body "$NOTICE"
+
+  agent:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: agent-${{ needs.gate.outputs.issue }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    env:
+      KIND: ${{ needs.gate.outputs.kind }}
+      ISSUE: ${{ needs.gate.outputs.issue }}
+      CHANGE: ${{ needs.gate.outputs.change }}
+      BUILD_BRANCH: ${{ needs.gate.outputs.build_branch }}
+      PLAN_BRANCH: ${{ needs.gate.outputs.plan_branch }}
+      PR: ${{ needs.gate.outputs.pr }}
+      TRIGGER: ${{ needs.gate.outputs.trigger }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.kind == 'start' && github.event.repository.default_branch || needs.gate.outputs.plan_branch }}
+          fetch-depth: 0
+
+      - name: Create the build and plan branches
+        if: env.KIND == 'start'
+        run: |
+          # A rerun of a stopped start run finds the branches already pushed: carry on from them.
+          git fetch -q origin
+          if ! git rev-parse -q --verify "refs/remotes/origin/$BUILD_BRANCH" >/dev/null; then
+            git push origin "HEAD:refs/heads/$BUILD_BRANCH"
+          fi
+          if git rev-parse -q --verify "refs/remotes/origin/$PLAN_BRANCH" >/dev/null; then
+            git switch -c "$PLAN_BRANCH" --track "origin/$PLAN_BRANCH"
+          else
+            git switch -c "$PLAN_BRANCH"
+            git push origin "$PLAN_BRANCH"
+          fi
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Install the OpenSpec CLI and Chromium for mock-ups
+        run: |
+          npm install -g @fission-ai/openspec@1.16.0
+          npx --yes playwright@1.64.1 install --with-deps chromium
+
+      - name: Write the prompt
+        id: prompt
+        env:
+          STEP_FILE: ${{ needs.gate.outputs.kind == 'start' && 'plan' || 'revise' }}
+          STEP: Plan
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'EOF'
+          import os
+          text = open(".github/agent-prompts/frame.md").read() + open(f".github/agent-prompts/{os.environ['STEP_FILE']}.md").read()
+          values = {"REPO": os.environ["GITHUB_REPOSITORY"], **{k: os.environ.get(k, "") for k in
+                    ("ISSUE", "CHANGE", "BUILD_BRANCH", "PLAN_BRANCH", "PR", "TRIGGER", "STEP", "RUN_URL")}}
+          for key, value in values.items():
+              text = text.replace("{{" + key + "}}", value)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("text<<PROMPT_END\n" + text + "\nPROMPT_END\n")
+          EOF
+
+      - name: Claude
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        env:
+          CLAUDE_BRANCH: ${{ env.PLAN_BRANCH }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: ${{ steps.prompt.outputs.text }}
+          base_branch: ${{ env.BUILD_BRANCH }}
+          # The plan PR is opened by claude[bot]; without this the action denies test and build
+          # commands on it. The gate already limits who can start a run.
+          restrict_untrusted_prs: "false"
+          claude_args: --model claude-sonnet-5-5 --max-turns 200 --permission-mode auto
+
+      - name: Comment when the run stopped
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          target="${PR:-$ISSUE}"
+          gh issue comment "$target" --repo "$GITHUB_REPOSITORY" --body \
+            "The agent's $KIND run stopped before finishing ($RUN_URL). It may have hit a usage limit or a timeout. Anything it pushed is on \`$PLAN_BRANCH\`. Rerun the job from that page, or comment again."
+
+      - name: Cost fallback
+        if: always() && steps.claude.outputs.execution_file != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXEC: ${{ steps.claude.outputs.execution_file }}
+        run: |
+          git fetch -q origin "$PLAN_BRANCH" || exit 0
+          if git grep -q "\"run\": \"$GITHUB_RUN_ID\"" "origin/$PLAN_BRANCH" -- 'openspec/changes/*ci-usage.jsonl'; then exit 0; fi
+          cost=$(jq -r '[.[] | select(.type == "result") | .total_cost_usd] | last // empty' "$EXEC" 2>/dev/null)
+          [ -n "$cost" ] || exit 0
+          target="${PR:-$ISSUE}"
+          gh issue comment "$target" --repo "$GITHUB_REPOSITORY" --body \
+            "This agent run wasn't recorded in \`ci-usage.jsonl\`. Its cost from the action: \$$(printf '%.2f' "$cost") (API-equivalent estimate, no token counts)."

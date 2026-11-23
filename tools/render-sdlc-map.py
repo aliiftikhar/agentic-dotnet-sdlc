@@ -4,6 +4,9 @@
 Each entry in a cell is one point, drawn as a bullet and wrapped to the column width.
 A point starting with "+" arrives in the next release and is drawn in amber.
 A point starting with "~" is planned and is drawn grey with a dashed outline.
+A point starting with "@" applies to agent runs only and is drawn in the agent lane's colour.
+"paths" is drawn above the stages: one lane per way of working, one box per stage, with arrows between them
+and an optional "loop" note in a box (e.g. comments starting revision runs).
 "loops" are drawn as arrows above the stage headers (going back), "skips" as dashed arrows below the grid.
 "harness_loop" is drawn as a green box under the grid: an arrow from its stage into the box, and one from the
 box back up into the Rules row, for checks on the harness itself rather than on one change.
@@ -29,6 +32,9 @@ ACCENT = "#0969da"
 LOOP_INK, SKIP_INK = "#8250df", "#6e7781"
 EVAL_INK, EVAL_BG = "#1a7f37", "#f0fff4"
 EVAL_GAP, EVAL_TITLE_H = 44, 30   # space between the skips and the harness box; the box's title line
+LANE_COLORS = {"local": ("#0969da", "#ddf4ff"), "agent": ("#bc4c00", "#fff1e5")}
+AGENT_INK = LANE_COLORS["agent"][0]
+PATHS_TITLE_H, LANE_GAP, NOTE_H, PILL_PAD = 30, 16, 40, 6
 
 stages, rows = data["stages"], data["rows"]
 
@@ -51,9 +57,21 @@ def wrap(text):
             line = test
     return lines + [line]
 
+def wrap_px(text, px):
+    max_w = px / FONT_SIZE
+    lines, line = [], ""
+    for word in text.split(" "):
+        test = f"{line} {word}" if line else word
+        if line and sum(map(char_w, test)) > max_w:
+            lines.append(line)
+            line = word
+        else:
+            line = test
+    return lines + [line]
+
 def points(stage, row):
     for item in stage.get(row, []):
-        kind = item[0] if item[:1] in ("+", "~") else ""
+        kind = item[0] if item[:1] in ("+", "~", "@") else ""
         yield kind, wrap(item[len(kind):])
 
 def cell_h(stage, row):
@@ -63,7 +81,23 @@ def cell_h(stage, row):
 row_h = [max(cell_h(s, r) for s in stages) + 2 * CARD_PAD + 4 for r in rows]
 
 width = PAD * 2 + LABEL_W + len(stages) * COL_W + (len(stages) - 1) * GAP
-head_y = PAD + TITLE_H + (LOOP_H if data.get("loops") else 0)
+paths = data.get("paths")
+lane_layout = []   # (lane, top, height, [(text lines, loop lines)] per stage)
+paths_top = PAD + TITLE_H
+y_cursor = paths_top
+if paths:
+    y_cursor += PATHS_TITLE_H
+    for lane in paths["lanes"]:
+        cells = []
+        for step in lane["steps"]:
+            text = wrap_px(step["text"], COL_W - 24)
+            loop = wrap_px("↺ " + step["loop"], COL_W - 36) if step.get("loop") else []
+            cells.append((text, loop))
+        h = max(len(t) * LINE_H + (len(l) * LINE_H + 2 * PILL_PAD + 8 if l else 0) for t, l in cells) + 2 * CARD_PAD
+        lane_layout.append((lane, y_cursor, h, cells))
+        y_cursor += h + LANE_GAP
+    y_cursor += NOTE_H - LANE_GAP
+head_y = y_cursor + (LOOP_H if data.get("loops") else 0)
 grid_top = head_y + HEADER_H + 12
 grid_h = sum(row_h) + ROW_GAP * (len(rows) - 1)
 grid_bottom = grid_top + grid_h
@@ -92,7 +126,8 @@ out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height
        '<defs>' + "".join(
            f'<marker id="{name}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">'
            f'<path d="M0,0 L10,5 L0,10 z" fill="{color}"/></marker>'
-           for name, color in (("arrow", ACCENT), ("arrow-loop", LOOP_INK), ("arrow-skip", SKIP_INK), ("arrow-eval", EVAL_INK))) + '</defs>',
+           for name, color in (("arrow", ACCENT), ("arrow-loop", LOOP_INK), ("arrow-skip", SKIP_INK), ("arrow-eval", EVAL_INK),
+                               ("arrow-local", LANE_COLORS["local"][0]), ("arrow-agent", AGENT_INK))) + '</defs>',
        f'<text x="{PAD}" y="{PAD + 22}" font-size="22" font-weight="600" fill="{INK}">{escape(data["title"])}</text>',
        f'<text x="{PAD}" y="{PAD + 48}" font-size="13" fill="{MUTED}">{escape(data["subtitle"])}</text>']
 
@@ -101,6 +136,42 @@ def col_x(i):
 
 def col_mid(n):   # n is the stage number, 1-based
     return col_x(n - 1) + COL_W / 2
+
+# Paths: one lane per way of working, one box per stage, arrows along the lane.
+if paths:
+    out.append(f'<text x="{PAD}" y="{paths_top + 18}" font-size="16" font-weight="600" fill="{INK}">{escape(paths["title"])}</text>')
+    for lane, top, h, cells in lane_layout:
+        ink, bg = LANE_COLORS[lane["style"]]
+        name_lines = wrap_px(lane["name"], LABEL_W - 16)
+        sub_lines = wrap_px(lane.get("sub", ""), LABEL_W - 16) if lane.get("sub") else []
+        ty = top + CARD_PAD + 13
+        for line in name_lines:
+            out.append(f'<text x="{PAD}" y="{ty}" font-size="13.5" font-weight="700" fill="{ink}">{escape(line)}</text>')
+            ty += LINE_H
+        for line in sub_lines:
+            out.append(f'<text x="{PAD}" y="{ty}" font-size="11.5" fill="{MUTED}">{escape(line)}</text>')
+            ty += LINE_H - 2
+        for i, (text, loop) in enumerate(cells):
+            x = col_x(i)
+            out.append(f'<rect x="{x}" y="{top}" width="{COL_W}" height="{h}" rx="8" fill="{bg}" stroke="{ink}" stroke-width="1.5"/>')
+            ty = top + CARD_PAD + 13
+            for line in text:
+                out.append(f'<text x="{x + 12}" y="{ty}" font-size="{FONT_SIZE}" fill="{INK}">{escape(line)}</text>')
+                ty += LINE_H
+            if loop:
+                ph = len(loop) * LINE_H + 2 * PILL_PAD
+                py = top + h - CARD_PAD - ph
+                out.append(f'<rect x="{x + 10}" y="{py}" width="{COL_W - 20}" height="{ph}" rx="5" fill="#ffffff" stroke="{ink}" stroke-dasharray="4 3"/>')
+                ly = py + PILL_PAD + 12
+                for line in loop:
+                    out.append(f'<text x="{x + 18}" y="{ly}" font-size="12" font-weight="600" fill="{ink}">{escape(line)}</text>')
+                    ly += LINE_H
+            if i < len(cells) - 1:
+                ay = top + h / 2
+                out.append(f'<line x1="{x + COL_W + 2}" y1="{ay}" x2="{x + COL_W + GAP - 2}" y2="{ay}" stroke="{ink}" stroke-width="2.5" marker-end="url(#arrow-{lane["style"]})"/>')
+    note_y = lane_layout[-1][1] + lane_layout[-1][2] + 26
+    mid = (col_x(0) + col_x(len(stages) - 1) + COL_W) / 2
+    out.append(f'<text x="{mid}" y="{note_y}" font-size="13.5" font-weight="600" fill="{MUTED}" text-anchor="middle">▼  {escape(paths["note"])}  ▼</text>')
 
 for i, stage in enumerate(stages):
     x = col_x(i)
@@ -125,6 +196,9 @@ for r, h in zip(rows, row_h):
             elif kind == "~":
                 ink, style = PLAN_INK, ' font-style="italic"'
                 out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{box_h}" rx="3" fill="none" stroke="{PLAN_LINE}" stroke-dasharray="3 3"/>')
+            elif kind == "@":
+                ink = AGENT_INK
+                out.append(f'<rect x="{x + 5}" y="{ty - 13}" width="{COL_W - 10}" height="{box_h}" rx="3" fill="{LANE_COLORS["agent"][1]}"/>')
             out.append(f'<circle cx="{x + 13}" cy="{ty - 4}" r="2.2" fill="{ink if kind else MUTED}"/>')
             for line in lines:
                 out.append(f'<text x="{x + TEXT_INDENT}" y="{ty}" font-size="{FONT_SIZE}" fill="{ink}"{style}>{escape(line)}</text>')

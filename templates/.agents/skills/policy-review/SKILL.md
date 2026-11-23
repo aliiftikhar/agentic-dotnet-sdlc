@@ -23,6 +23,7 @@ Review whatever exists: only the spec before planning, the spec and diff before 
 5. **Logging and errors.** No personal data or payment details in logs, exception messages or analytics events.
 6. **Payments and subscriptions.** Changes to subscription checks, trial limits or payment flows keep paid features behind a valid subscription.
 7. **Retention.** New stored data has an obvious reason to exist; note if nothing ever deletes it.
+8. **Agent harness.** If the change touches `.github/`, `.claude/`, `.agents/`, `.codex/`, `scripts/` or the agent sections of `AGENTS.md`, check it against `docs/threat-model.md`: which threats it affects, whether it weakens a control, and whether the threat model needs updating.
 
 ## Output
 
@@ -35,7 +36,7 @@ Reviewed: spec | spec + diff (<base commit>..<head>)
 
 | Severity | Area | Finding | Where | Suggested action |
 |----------|------|---------|-------|------------------|
-| High / Medium / Low | Personal data / Third parties / Access / Input / Logging / Payments / Retention | ... | `path:line` or spec section | ... |
+| High / Medium / Low | Personal data / Third parties / Access / Input / Logging / Payments / Retention / Harness | ... | `path:line` or spec section | ... |
 
 ## Needs the repo owner's decision
 - ...
