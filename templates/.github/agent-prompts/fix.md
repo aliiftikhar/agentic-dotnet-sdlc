@@ -22,6 +22,10 @@ You are on `{{BUILD_BRANCH}}`. Feedback: {{TRIGGER}}.
 3. Fix with tests, as AGENTS.md asks. If the behaviour changes, update the archived change's design or
    spec to match. Build and run the tests again; rerun `scripts/mutation-check.sh` if `UseCases/`,
    `Services/` or `Models/` changed.
+   Before you push, make the PR's checks pass: if `.razor` or `.css` files changed, retake the
+   screenshots (`scripts/ui-screenshots.sh`, guest view in CI, as in the build) and
+   commit them; name every changed file in `tasks.md`; then run `scripts/format-check.sh --fix` and
+   `scripts/spec-check.sh` and fix whatever fails. If one still fails, say so in your reply.
 4. Record the cost (see the rules, step "PR and review"), then `scripts/cost-report.sh {{CHANGE}}`; commit
    `ci-usage.jsonl` and `cost.md` with your fixes and push. Update the PR's Cost section
    (`gh pr edit {{PR}} --body-file <file>`).

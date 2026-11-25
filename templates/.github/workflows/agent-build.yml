@@ -171,6 +171,14 @@ jobs:
             actions: read
           claude_args: --model claude-sonnet-5-5 --max-turns 200 --permission-mode auto
 
+      - name: Read the branch tip after the run
+        id: end
+        # The job's token, in a step of its own, so the owner's token never shares a step with it.
+        if: success() && needs.gate.outputs.codex == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: echo "sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/$BUILD_BRANCH" --jq .commit.sha)" >> "$GITHUB_OUTPUT" || true
+
       - name: Ask Codex to review, as the owner
         # Codex acts only for accounts connected to it, so this uses the owner's fine-grained token
         # (CODEX_REVIEW_TOKEN: this repo, pull requests write). Only this step gets the token, and it
@@ -179,6 +187,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
           START_SHA: ${{ steps.start.outputs.sha }}
+          END_SHA: ${{ steps.end.outputs.sha }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
             echo "::notice::CODEX_REVIEW_TOKEN isn't set, so Codex wasn't asked to review."
@@ -188,8 +197,8 @@ jobs:
           if [ "$KIND" = build ]; then
             target=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BUILD_BRANCH" --base main --json number --jq '.[0].number // empty') || target=""
           else
-            tip=$(gh api "repos/$GITHUB_REPOSITORY/branches/$BUILD_BRANCH" --jq .commit.sha) || tip=""
-            if [ -n "$tip" ] && [ "$tip" != "$START_SHA" ]; then target="$PR"; fi
+            # Read in the step before: CODEX_REVIEW_TOKEN only has pull requests access.
+            if [ -n "$END_SHA" ] && [ "$END_SHA" != "$START_SHA" ]; then target="$PR"; fi
           fi
           if [ -z "$target" ]; then
             echo "Nothing new for Codex to review."
